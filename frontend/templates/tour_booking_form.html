@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>טופס הזמנת סיור</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            background-color: #f7f4ee;
+            color: #1f3327;
+        }
+
+        .booking-section {
+            padding: 70px 20px;
+        }
+
+        .booking-form {
+            max-width: 750px;
+            margin: auto;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+        }
+
+        .booking-form h2 {
+            text-align: center;
+            font-size: 34px;
+            color: #2e7d32;
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-group {
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            background: #f1eee9;
+            border-radius: 9px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 90px;
+            resize: none;
+        }
+
+        .error-message {
+            background-color: #ffe5e5;
+            color: #b00020;
+            border: 1px solid #ffb3b3;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .success-message {
+            background-color: #e6f4ea;
+            color: #1b5e20;
+            border: 1px solid #a5d6a7;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .message {
+            background: #e8f4ea;
+            color: #2f6c3a;
+            border: 1px solid #88b98f;
+            border-radius: 9px;
+            padding: 15px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: #4d8357;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 9px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #4d8357;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        @media(max-width: 900px) {
+            .row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+{% include 'line.html' %}
+
+<section class="booking-section">
+    <form class="booking-form" method="POST" action="/tour-booking-form">
+        <h2>טופס הזמנת סיור</h2>
+
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if success %}
+        <div class="success-message">
+            {{ success }}
+        </div>
+        {% endif %}
+
+        <input type="hidden" name="tour_type" value="{{ selected_tour }}">
+
+        <div class="message">
+            הסיור שנבחר: {{ selected_tour }}
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>שם מלא *</label>
+                <input type="text" name="full_name" placeholder="הזינו שם מלא" required>
+            </div>
+
+            <div class="form-group">
+                <label>טלפון *</label>
+                <input type="tel" name="phone" placeholder="050-1234567" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>אימייל *</label>
+            <input type="email" name="email" placeholder="example@email.com" required>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>תאריך מועדף *</label>
+                <input type="date" name="preferred_date" required>
+            </div>
+
+            <div class="form-group">
+                <label>שעה מועדפת *</label>
+                <input type="time" name="preferred_time" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>מספר משתתפים *</label>
+            <input type="number" name="participants" min="1" placeholder="הזינו מספר משתתפים" required>
+        </div>
+
+        <div class="form-group">
+            <label>הערות נוספות</label>
+            <textarea name="notes" placeholder="אלרגיות, בקשות מיוחדות וכו׳"></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">שלחו הזמנה</button>
+
+        <a href="/tours-booking" class="back-link">חזרה לבחירת סיור</a>
+    </form>
+</section>
+
+</body>
+</html>

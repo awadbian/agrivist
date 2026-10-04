@@ -1,0 +1,1560 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סידור עבודה שבועי</title>
+    <style>
+        :root {
+            --green-900: #173b2b;
+            --green-800: #2f5f3d;
+            --green-700: #42663d;
+            --green-600: #5f8358;
+            --green-100: #eef8ee;
+            --green-50: #f8fbf6;
+            --surface: #ffffff;
+            --surface-soft: #f7f5f1;
+            --line: #dce8d8;
+            --muted: #68766a;
+            --warning: #a35f10;
+            --warning-bg: #fff5df;
+            --closed: #f1f1ed;
+            --danger: #b3261e;
+            --danger-bg: #fff1ef;
+            --shadow: 0 16px 38px rgba(32, 39, 31, 0.1);
+            --shadow-soft: 0 8px 22px rgba(32, 39, 31, 0.07);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            background: #f7f8f5;
+            color: var(--green-900);
+            line-height: 1.5;
+        }
+
+        .weekly-schedule-page {
+            width: min(1440px, calc(100% - 36px));
+            margin: 0 auto;
+            padding: 30px 0 70px;
+        }
+
+        .page-hero {
+            position: relative;
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            color: var(--green-900);
+            padding: 30px;
+        }
+
+        .page-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 7px;
+            background: linear-gradient(90deg, #5f8358, #87a66d, #c1d9a4);
+        }
+
+        .page-hero > * {
+            position: relative;
+        }
+
+        .hero-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: clamp(30px, 3.2vw, 42px);
+            line-height: 1.15;
+            letter-spacing: 0;
+            font-weight: 900;
+            color: var(--green-900);
+        }
+
+        .page-subtitle {
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.6;
+        }
+
+        .back-link {
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 1px solid #cfdacc;
+            background: #ffffff;
+            color: var(--green-800);
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: var(--shadow-soft);
+            transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+        }
+
+        .back-link:hover {
+            border-color: var(--green-600);
+            color: var(--green-900);
+            transform: translateY(-1px);
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 14px;
+            margin-top: 26px;
+        }
+
+        .meta-card {
+            min-height: 82px;
+            border-radius: 12px;
+            padding: 16px 18px;
+            background: var(--green-50);
+            border: 1px solid var(--line);
+            box-shadow: 0 8px 18px rgba(32, 39, 31, 0.04);
+        }
+
+        .meta-card span {
+            display: block;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .meta-card strong {
+            display: block;
+            margin-top: 8px;
+            color: var(--green-900);
+            font-size: 17px;
+            line-height: 1.45;
+        }
+
+        .hours-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: var(--surface-soft);
+            border: 1px solid #e5e9df;
+            color: var(--green-900);
+            font-weight: 800;
+            line-height: 1.7;
+        }
+
+        .hours-row span {
+            color: var(--muted);
+        }
+
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .admin-action-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            min-height: 58px;
+            padding: 12px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid var(--line);
+            box-shadow: 0 8px 18px rgba(32, 39, 31, 0.045);
+        }
+
+        .admin-action-form label {
+            color: var(--green-900);
+            font-weight: 800;
+        }
+
+        .admin-action-form select,
+        .admin-action-form button {
+            min-height: 38px;
+            border: 1px solid #cfdacc;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 800;
+            padding: 8px 12px;
+        }
+
+        .admin-action-form select {
+            flex: 1 1 170px;
+            background: #ffffff;
+            color: var(--green-900);
+            cursor: pointer;
+        }
+
+        .admin-action-form button {
+            background: #ffffff;
+            color: var(--green-800);
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+        }
+
+        .admin-action-form button:hover {
+            border-color: var(--green-600);
+            color: var(--green-900);
+            transform: translateY(-1px);
+        }
+
+        button[disabled],
+        .is-loading {
+            cursor: wait !important;
+            opacity: 0.72;
+            pointer-events: none;
+        }
+
+        .reset-button {
+            background: var(--danger-bg) !important;
+            border-color: #e0aaa5 !important;
+            color: var(--danger) !important;
+        }
+
+        .save-schedule-button {
+            background: var(--green-600) !important;
+            border-color: var(--green-600) !important;
+            color: #ffffff !important;
+            box-shadow: 0 10px 20px rgba(95, 131, 88, 0.18);
+        }
+
+        .constraints-window-date {
+            display: none !important;
+        }
+
+        .constraints-window-display {
+            align-self: center;
+            color: var(--muted);
+            font-weight: 800;
+        }
+
+        .side-panel > .side-card:nth-of-type(2) {
+            display: none !important;
+        }
+
+        .flash-messages {
+            display: grid;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .flash-message {
+            border-radius: 10px;
+            padding: 12px 14px;
+            background: #ffffff;
+            color: var(--green-900);
+            font-weight: 800;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .flash-success {
+            color: #245b2d;
+            border-color: #a9c7a9;
+            background: #eef8ee;
+        }
+
+        .flash-error {
+            color: var(--danger);
+            border-color: #e0aaa5;
+            background: var(--danger-bg);
+        }
+
+        .schedule-shell {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 350px;
+            gap: 22px;
+            margin-top: 24px;
+        }
+
+        .schedule-board,
+        .side-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .schedule-board {
+            padding: 22px;
+        }
+
+        .board-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .board-header h2,
+        .side-card h2 {
+            margin: 0;
+            color: var(--green-900);
+            font-size: 22px;
+        }
+
+        .board-header p,
+        .side-card p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .board-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 38px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: var(--green-100);
+            color: var(--green-800);
+            font-weight: 800;
+            white-space: nowrap;
+            border: 1px solid #cfe0ca;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .day-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 340px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #ffffff;
+            overflow: hidden;
+            transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .day-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px rgba(32, 39, 31, 0.09);
+        }
+
+        .day-card.is-closed {
+            background: var(--closed);
+            border-color: #d8ddd3;
+            color: #657064;
+        }
+
+        .day-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 18px;
+            border-bottom: 1px solid var(--line);
+            background: #fbfcf9;
+        }
+
+        .day-card.is-closed .day-head {
+            background: #e9ede5;
+        }
+
+        .day-name {
+            margin: 0;
+            color: var(--green-900);
+            font-size: 22px;
+        }
+
+        .day-date {
+            margin-top: 6px;
+            color: var(--muted);
+            font-weight: 700;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 30px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: var(--green-100);
+            color: var(--green-800);
+            border: 1px solid #cfe0ca;
+            font-size: 13px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .day-card.is-closed .status-badge {
+            background: #eef0ea;
+            border-color: #d8ddd3;
+            color: #657064;
+        }
+
+        .shift-list {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .day-card.is-closed .shift-list {
+            display: none;
+        }
+
+        .shift-block {
+            border: 1px solid #dfe9dc;
+            border-radius: 12px;
+            background: #ffffff;
+            padding: 14px;
+            box-shadow: 0 6px 14px rgba(32, 39, 31, 0.035);
+        }
+
+        .shift-block.is-selected {
+            border-color: var(--green-600);
+            box-shadow: 0 0 0 3px rgba(79, 127, 77, 0.13);
+        }
+
+        .shift-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .shift-name {
+            margin: 0;
+            color: var(--green-900);
+            font-size: 17px;
+        }
+
+        .shift-hours {
+            color: var(--green-700);
+            font-weight: 800;
+            direction: ltr;
+            white-space: nowrap;
+        }
+
+        .assigned-workers {
+            min-height: 58px;
+            border: 1px dashed #c7d7c2;
+            border-radius: 10px;
+            background: var(--green-50);
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .assign-btn,
+        .day-toggle-btn {
+            width: 100%;
+            min-height: 40px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+        }
+
+        .assign-btn {
+            margin-top: 12px;
+            background: var(--green-600);
+            border-color: var(--green-600);
+            color: #ffffff;
+        }
+
+        .assign-btn:hover {
+            background: var(--green-700);
+            border-color: var(--green-700);
+        }
+
+        .assign-btn:hover,
+        .day-toggle-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .day-footer {
+            padding: 0 16px 16px;
+        }
+
+        .day-toggle-btn {
+            background: #ffffff;
+            color: var(--green-800);
+            border-color: #d2e1cf;
+        }
+
+        .day-card.is-closed .day-toggle-btn {
+            background: var(--warning-bg);
+            border-color: #ead4aa;
+            color: var(--warning);
+        }
+
+        .closed-message {
+            display: none;
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 18px;
+            color: #6c756c;
+            text-align: center;
+            line-height: 1.7;
+            font-weight: 800;
+        }
+
+        .day-card.is-closed .closed-message {
+            display: flex;
+        }
+
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .side-card {
+            padding: 20px;
+        }
+
+        .selected-empty,
+        .constraints-empty {
+            margin-top: 18px;
+            min-height: 140px;
+            border: 1px dashed #c9d8c6;
+            border-radius: 13px;
+            background: var(--green-50);
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.7;
+            padding: 18px;
+            font-weight: 700;
+        }
+
+        .selected-details {
+            display: none;
+            margin-top: 18px;
+            border-radius: 13px;
+            background: #fbfcf9;
+            border: 1px solid var(--line);
+            padding: 16px;
+        }
+
+        .selected-details.is-visible {
+            display: block;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #dde9d8;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-row span {
+            color: var(--muted);
+        }
+
+        .detail-row strong {
+            color: var(--green-900);
+        }
+
+        .constraints-list,
+        .employee-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .constraint-item,
+        .employee-card {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #ffffff;
+            padding: 13px;
+            box-shadow: 0 6px 14px rgba(32, 39, 31, 0.035);
+        }
+
+        .constraint-item strong {
+            display: block;
+            color: var(--green-900);
+            margin-bottom: 5px;
+        }
+
+        .constraint-item span {
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .submission-status-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+            max-height: 360px;
+            overflow: auto;
+        }
+
+        .submission-status-item {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #ffffff;
+            padding: 12px;
+            box-shadow: 0 6px 14px rgba(32, 39, 31, 0.035);
+        }
+
+        .submission-status-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .submission-status-item strong {
+            display: block;
+            color: var(--green-900);
+        }
+
+        .submission-status-item span,
+        .submission-status-item p {
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .submitted-badge,
+        .not-submitted-badge {
+            border-radius: 999px;
+            padding: 5px 9px;
+            font-size: 12px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .submitted-badge {
+            background: var(--green-100);
+            color: var(--green-800);
+        }
+
+        .not-submitted-badge {
+            background: #fff1ef;
+            color: #8b2d22;
+        }
+
+        .assignment-panel {
+            display: none;
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid var(--line);
+        }
+
+        .assignment-panel.is-visible {
+            display: block;
+        }
+
+        .assignment-panel h3 {
+            margin: 0;
+            color: var(--green-900);
+            font-size: 18px;
+        }
+
+        .assignment-panel p {
+            margin: 5px 0 0;
+        }
+
+        .employee-card.is-selected {
+            border-color: var(--green-600);
+            box-shadow: 0 0 0 3px rgba(79, 127, 77, 0.12);
+        }
+
+        .employee-main {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .employee-name {
+            color: var(--green-900);
+            font-weight: 900;
+        }
+
+        .employee-job {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .availability-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 10px;
+            padding: 6px 9px;
+            border-radius: 999px;
+            background: #f5f7f2;
+            color: var(--green-900);
+            font-size: 13px;
+            font-weight: 800;
+            border: 1px solid #e3e9df;
+        }
+
+        .availability-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #98a19a;
+        }
+
+        .availability-status.green .availability-dot {
+            background: #219653;
+        }
+
+        .availability-status.yellow .availability-dot {
+            background: #d99a18;
+        }
+
+        .availability-status.red .availability-dot {
+            background: #d33f31;
+        }
+
+        .availability-status.gray .availability-dot {
+            background: #98a19a;
+        }
+
+        .select-employee-btn {
+            flex: 0 0 auto;
+            min-height: 34px;
+            border: 1px solid #cfe0ca;
+            border-radius: 10px;
+            background: var(--green-100);
+            color: var(--green-800);
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 900;
+            padding: 7px 11px;
+        }
+
+        .employee-card.is-selected .select-employee-btn {
+            background: var(--green-600);
+            border-color: var(--green-600);
+            color: #ffffff;
+        }
+
+        .assignment-warning {
+            display: none;
+            margin-top: 14px;
+            border: 1px solid #efc0b7;
+            border-radius: 12px;
+            background: #fff1ef;
+            color: #8b2d22;
+            padding: 13px;
+            line-height: 1.7;
+            font-weight: 800;
+        }
+
+        .assignment-warning.is-visible {
+            display: block;
+        }
+
+        .employees-empty {
+            margin-top: 14px;
+            border: 1px dashed #c9d8c6;
+            border-radius: 12px;
+            background: #f8fbf6;
+            color: var(--muted);
+            padding: 16px;
+            text-align: center;
+            line-height: 1.7;
+            font-weight: 700;
+        }
+
+        .saved-schedule-section {
+            margin-top: 24px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            padding: 22px;
+        }
+
+        .saved-schedule-section h2 {
+            margin: 0;
+            color: var(--green-900);
+            font-size: 22px;
+        }
+
+        .saved-schedule-section p {
+            margin: 6px 0 18px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .saved-schedule-table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #ffffff;
+        }
+
+        .saved-schedule-table {
+            width: 100%;
+            min-width: 820px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #ffffff;
+        }
+
+        .saved-schedule-table th,
+        .saved-schedule-table td {
+            border: 0;
+            border-bottom: 1px solid var(--line);
+            border-inline-start: 1px solid var(--line);
+            padding: 14px;
+            vertical-align: top;
+            text-align: right;
+        }
+
+        .saved-schedule-table th:last-child,
+        .saved-schedule-table td:last-child {
+            border-inline-start: 0;
+        }
+
+        .saved-schedule-table tbody tr:last-child th,
+        .saved-schedule-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .saved-schedule-table th {
+            background: #f8fbf6;
+            color: var(--green-900);
+            font-weight: 900;
+            line-height: 1.5;
+        }
+
+        .saved-schedule-table thead th {
+            background: #eef5ee;
+        }
+
+        .saved-schedule-table tbody tr:nth-child(even) td,
+        .saved-schedule-table tbody tr:nth-child(even) th {
+            background: #fcfdfb;
+        }
+
+        .saved-shift-hours {
+            display: block;
+            color: var(--green-700);
+            direction: ltr;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .saved-employee {
+            display: block;
+            color: var(--green-900);
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        .saved-empty {
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .weekly-schedule-page.has-saved-schedule .schedule-shell {
+            display: block;
+        }
+
+        .weekly-schedule-page.has-saved-schedule .schedule-board,
+        .weekly-schedule-page.has-saved-schedule .side-panel {
+            display: none;
+        }
+
+        .weekly-schedule-page.has-saved-schedule .saved-schedule-section {
+            margin-top: 24px;
+        }
+
+        .weekly-schedule-page:not(.has-saved-schedule) > .saved-schedule-section {
+            display: none;
+        }
+
+        .schedule-status-value {
+            display: block;
+            margin-top: 8px;
+            color: var(--green-900);
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        @media (max-width: 1180px) {
+            .schedule-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .days-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 760px) {
+            .weekly-schedule-page {
+                width: min(100% - 24px, 1440px);
+                padding-top: 20px;
+            }
+
+            .page-hero,
+            .schedule-board,
+            .side-card {
+                border-radius: 14px;
+                padding: 18px;
+            }
+
+            .hero-top,
+            .board-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .meta-grid,
+            .admin-actions,
+            .days-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-action-form {
+                align-items: stretch;
+            }
+
+            .admin-action-form button,
+            .admin-action-form select,
+            .back-link {
+                width: 100%;
+            }
+
+            .day-card {
+                min-height: auto;
+            }
+
+            .saved-schedule-section {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include "line.html" %}
+
+    <main class="weekly-schedule-page{% if has_saved_schedule %} has-saved-schedule{% endif %}">
+        <section class="page-hero">
+            <div class="hero-top">
+                <div>
+                    <h1 class="page-title">סידור עבודה שבועי</h1>
+                    <p class="page-subtitle">ניהול ושיבוץ עובדים למשמרות לפי שבועות</p>
+                </div>
+                <a class="back-link" href="{{ url_for('admin_dashboard') }}">חזרה לממשק ניהול</a>
+            </div>
+
+            <div class="meta-grid" aria-label="פרטי שבוע">
+                <div class="meta-card">
+                    <span>תאריך היום</span>
+                    <strong>{{ today.strftime("%d/%m/%Y") }}</strong>
+                </div>
+                <div class="meta-card">
+                    <span>שבוע בעריכה</span>
+                    <strong>{{ next_week_start.strftime("%d/%m/%Y") }} - {{ next_week_end.strftime("%d/%m/%Y") }}</strong>
+                </div>
+                <div class="meta-card">
+                    <span>מצב סידור</span>
+                    <strong>{{ schedule_status_label }}</strong>
+                </div>
+                <div class="meta-card">
+                    <span>סטטוס אילוצים</span>
+                    <strong>{% if constraints_status == "open" %}פתוח להגשה{% else %}סגור להגשה{% endif %}</strong>
+                </div>
+                <div class="meta-card">
+                    <span>סידור פעיל</span>
+                    <strong>
+                        {% if active_published_week_start %}
+                        {{ active_published_week_start.strftime("%d/%m/%Y") }}
+                        {% else %}
+                        טרם פורסם
+                        {% endif %}
+                    </strong>
+                </div>
+                <div class="meta-card">
+                    <span>אילוצים פתוחים</span>
+                    <strong>
+                        {% if active_constraints_week_start and active_constraints_week_end %}
+                        {{ active_constraints_week_start.strftime("%d/%m/%Y") }} - {{ active_constraints_week_end.strftime("%d/%m/%Y") }}
+                        {% else %}
+                        אין שבוע פתוח
+                        {% endif %}
+                    </strong>
+                </div>
+            </div>
+
+            <div class="hours-row">
+                <strong>שעות עבודה:</strong>
+                <span>ראשון–חמישי: 07:00–21:00</span>
+                <span>|</span>
+                <span>שישי: 07:00–14:00</span>
+                <span>|</span>
+                <span>שבת: סגור</span>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="flash-messages" role="status" aria-live="polite">
+                    {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="admin-actions" aria-label="admin weekly schedule actions">
+                <form class="admin-action-form" method="get" action="{{ url_for('admin_weekly_schedule') }}">
+                    <label for="week">שבוע להצגה</label>
+                    <select id="week" name="week" onchange="this.form.submit()">
+                        {% for option in week_options %}
+                        <option value="{{ option.offset }}" {% if option.is_selected %}selected{% endif %}>
+                            {{ option.label }} | {{ option.start.strftime("%d/%m") }} - {{ option.end.strftime("%d/%m") }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </form>
+
+                {% if has_saved_schedule %}
+                <form
+                    class="admin-action-form"
+                    method="post"
+                    action="{{ url_for('reset_admin_weekly_schedule') }}"
+                    data-confirm="האם לאפס את סידור העבודה השמור לשבוע הנבחר? פעולה זו תמחק את השיבוצים שנשמרו."
+                >
+                    <input type="hidden" name="week" value="{{ week_offset }}">
+                    <button class="reset-button" type="submit" data-loading-text="מאפס...">איפוס סידור עבודה</button>
+                </form>
+                {% else %}
+                <form
+                    class="admin-action-form"
+                    id="save-schedule-form"
+                    method="post"
+                    action="{{ url_for('save_admin_weekly_schedule') }}"
+                >
+                    <input type="hidden" name="week" value="{{ week_offset }}">
+                    <input type="hidden" id="assignments-payload" name="assignments_payload" value="[]">
+                    <button class="save-schedule-button" type="submit" data-loading-text="שומר ומפרסם...">שמירת סידור עבודה</button>
+                </form>
+                {% endif %}
+
+                {% if has_saved_schedule and schedule_status != "published" %}
+                <form
+                    class="admin-action-form"
+                    method="post"
+                    action="{{ url_for('publish_admin_weekly_schedule') }}"
+                >
+                    <input type="hidden" name="week" value="{{ week_offset }}">
+                    <button class="save-schedule-button" type="submit" data-loading-text="מפרסם...">פרסום לעובדים</button>
+                </form>
+                {% endif %}
+
+                <form class="admin-action-form" method="post" action="{{ url_for('update_weekly_schedule_submission_window') }}">
+                    <input type="hidden" name="week" value="{{ week_offset }}">
+                    {% if constraints_updates_open %}
+                    <input type="hidden" name="is_open" value="0">
+                    <button type="submit" data-loading-text="מעדכן...">הפסקת עדכון אילוצים</button>
+                    {% else %}
+                    <input type="hidden" name="is_open" value="1">
+                    <button type="submit" data-loading-text="מעדכן...">פתיחת עדכון אילוצים</button>
+                    <span class="constraints-window-display">
+                        {% if schedule_status == "published" %}
+                        סגור כי הסידור לשבוע זה כבר פורסם
+                        {% elif is_active_constraints_week %}
+                        עדכון אילוצים סגור לשבוע זה
+                        {% else %}
+                        השבוע הפעיל לאילוצים הוא שבוע אחר
+                        {% endif %}
+                    </span>
+                    {% endif %}
+                </form>
+            </div>
+        </section>
+
+        <div class="schedule-shell">
+            <section class="schedule-board" aria-label="לוח סידור עבודה שבועי">
+                <div class="board-header">
+                    <div>
+                        <h2>לוח משמרות לשבוע הבא</h2>
+                        <p>כאן ניתן לבחור משמרות ולשבץ עובדים בהתאם לאילוצים שהוגשו.</p>
+                    </div>
+                    <span class="board-status">שבוע עבודה</span>
+                </div>
+
+                <div class="days-grid">
+                    {% for day in week_days %}
+                    <article class="day-card{% if day.is_closed %} is-closed{% endif %}" data-day-key="{{ day.key }}" data-day-name="{{ day.name }}" data-day-date="{{ day.date.strftime('%d/%m/%Y') }}">
+                        <header class="day-head">
+                            <div>
+                                <h3 class="day-name">יום {{ day.name }}</h3>
+                                <div class="day-date">{{ day.date.strftime("%d/%m/%Y") }}</div>
+                            </div>
+                            <span class="status-badge">{% if day.is_closed %}יום סגור{% else %}פתוח{% endif %}</span>
+                        </header>
+
+                        <div class="closed-message">יום זה מסומן כסגור ואין בו משמרות לעריכה.</div>
+
+                        <div class="shift-list">
+                            {% for shift in day.shifts %}
+                            <section
+                                class="shift-block"
+                                data-shift-name="{{ shift.name }}"
+                                data-shift-hours="{{ shift.hours }}"
+                                data-shift-type="{{ shift.type }}"
+                                data-start-time="{{ shift.start_time }}"
+                                data-end-time="{{ shift.end_time }}"
+                                data-day-key="{{ day.key }}"
+                                data-day-name="{{ day.name }}"
+                                data-day-date="{{ day.date.strftime('%d/%m/%Y') }}"
+                                data-work-date="{{ day.date.isoformat() }}"
+                            >
+                                <div class="shift-top">
+                                    <h4 class="shift-name">{{ shift.name }}</h4>
+                                    <span class="shift-hours">{{ shift.hours }}</span>
+                                </div>
+                                <div class="assigned-workers">לא שובץ עובד</div>
+                                <button class="assign-btn" type="button">שיבוץ עובדים</button>
+                            </section>
+                            {% endfor %}
+                        </div>
+
+                        <footer class="day-footer">
+                            <form method="post" action="{{ url_for('update_weekly_schedule_closed_day') }}">
+                                <input type="hidden" name="week" value="{{ week_offset }}">
+                                <input type="hidden" name="day_name" value="{{ day.key }}">
+                                <input type="hidden" name="day_date" value="{{ day.date.isoformat() }}">
+                                <input type="hidden" name="is_closed" value="{% if day.is_closed %}0{% else %}1{% endif %}">
+                                <button class="day-toggle-btn" type="submit" data-loading-text="מעדכן יום...">
+                                {% if day.is_closed %}פתח יום{% else %}סמן כיום סגור{% endif %}
+                                </button>
+                            </form>
+                        </footer>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <aside class="side-panel" aria-label="פרטי סידור">
+                <section class="side-card">
+                    <h2>פרטי משמרת נבחרת</h2>
+                    <p>פרטי היום והמשמרת יוצגו לאחר בחירה.</p>
+
+                    <div class="selected-empty" id="selected-empty">בחר/י משמרת כדי לראות פרטים</div>
+
+                    <div class="selected-details" id="selected-details">
+                        <div class="detail-row">
+                            <span>יום</span>
+                            <strong id="detail-day">-</strong>
+                        </div>
+                        <div class="detail-row">
+                            <span>תאריך</span>
+                            <strong id="detail-date">-</strong>
+                        </div>
+                        <div class="detail-row">
+                            <span>משמרת</span>
+                            <strong id="detail-shift">-</strong>
+                        </div>
+                        <div class="detail-row">
+                            <span>שעות</span>
+                            <strong id="detail-hours">-</strong>
+                        </div>
+                        <div class="detail-row">
+                            <span>עובדים משובצים</span>
+                            <strong id="detail-assigned-count">0</strong>
+                        </div>
+                    </div>
+
+                    <div class="assignment-panel" id="assignment-panel">
+                        <h3>בחירת עובדים למשמרת</h3>
+                        <p>ניתן לבחור עובד/ת למשמרת. צבע הזמינות מבוסס על האילוצים שהוגשו.</p>
+                        <div class="assignment-warning" id="assignment-warning">
+                            העובד/ת סימן/ה שאינו/ה זמין/ה למשמרת זו. יש לדבר עם העובד/ת ולעדכן אותו/ה לפני השיבוץ.
+                        </div>
+                        <div class="employee-list" id="employee-list"></div>
+                    </div>
+                </section>
+
+                <section class="side-card">
+                    <h2>אילוצי עובדים</h2>
+                    <p>אילוצי העובדים משתלבים בתצוגת השיבוץ לאחר בחירת משמרת.</p>
+
+                    <div class="constraints-list">
+                        <div class="constraint-item">
+                            <strong>מקור הנתונים</strong>
+                            <span>הזמינות נטענת מטבלאות אילוצי העובדים לשבוע הבא.</span>
+                        </div>
+                        <div class="constraint-item">
+                            <strong>שלב נוכחי</strong>
+                            <span>בחירת העובדים נשמרת רק לאחר לחיצה על שמירת סידור עבודה.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="side-card" id="submission-status">
+                    <h2>סטטוס הגשת אילוצים</h2>
+                    <p>תצוגת מצב ההגשה של כל העובדים לשבוע הנבחר.</p>
+
+                    <div class="submission-status-list">
+                        {% for status in submission_statuses %}
+                        <article class="submission-status-item">
+                            <div class="submission-status-top">
+                                <div>
+                                    <strong>{{ status.name }}</strong>
+                                    <span dir="ltr">{{ status.email }}</span>
+                                </div>
+                                <span class="{% if status.submitted %}submitted-badge{% else %}not-submitted-badge{% endif %}">
+                                    {% if status.submitted %}שלח/ה אילוצים{% else %}עדיין לא שלח/ה{% endif %}
+                                </span>
+                            </div>
+                            {% if status.notes %}
+                            <p>{{ status.notes }}</p>
+                            {% endif %}
+                        </article>
+                        {% else %}
+                        <div class="employees-empty">אין עובדים להצגה כרגע.</div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </aside>
+        </div>
+
+        <section class="saved-schedule-section" aria-label="saved weekly schedule draft">
+            <h2>סיכום סידור עבודה שנשמר</h2>
+            {% if schedule_status == "published" %}
+            <p>הטבלה מציגה את סידור העבודה שפורסם לעובדים לשבוע הנבחר.</p>
+            {% else %}
+            <p>הטבלה מציגה את סידור העבודה שנשמר לשבוע הנבחר.</p>
+            {% endif %}
+
+            <div class="saved-schedule-table-wrap">
+                <table class="saved-schedule-table">
+                    <thead>
+                        <tr>
+                            <th>משמרת</th>
+                            {% for day in saved_schedule_table.days %}
+                            <th>יום {{ day.name }}<br>{{ day.date.strftime("%d/%m/%Y") }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in saved_schedule_table.rows %}
+                        <tr data-summary-shift="{{ row.shift_type }}">
+                            <th>{{ row.shift_name }}</th>
+                            {% for cell in row.cells %}
+                            <td data-summary-day="{{ cell.day_key }}">
+                                {% if cell.has_shift %}
+                                <span class="saved-shift-hours">{{ cell.hours }}</span>
+                                {% for employee in cell.employees %}
+                                <span class="saved-employee">{{ employee }}</span>
+                                {% endfor %}
+                                {% else %}
+                                <span class="saved-empty">לא שובץ עובד</span>
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script id="employees-availability-data" type="application/json">
+        {{ employees_availability|tojson }}
+    </script>
+
+    <script>
+        const employeesAvailabilityElement = document.getElementById("employees-availability-data");
+        const employeesAvailability = employeesAvailabilityElement
+            ? JSON.parse(employeesAvailabilityElement.textContent || "[]")
+            : [];
+        const dayCards = document.querySelectorAll(".day-card");
+        const shiftBlocks = document.querySelectorAll(".shift-block");
+        const selectedEmpty = document.getElementById("selected-empty");
+        const selectedDetails = document.getElementById("selected-details");
+        const assignmentPanel = document.getElementById("assignment-panel");
+        const assignmentWarning = document.getElementById("assignment-warning");
+        const employeeList = document.getElementById("employee-list");
+        const detailDay = document.getElementById("detail-day");
+        const detailDate = document.getElementById("detail-date");
+        const detailShift = document.getElementById("detail-shift");
+        const detailHours = document.getElementById("detail-hours");
+        const detailAssignedCount = document.getElementById("detail-assigned-count");
+        const saveScheduleForm = document.getElementById("save-schedule-form");
+        const assignmentsPayload = document.getElementById("assignments-payload");
+        const selectedEmployeesByShift = {};
+        let activeShiftBlock = null;
+
+        function employeeByEmail(email) {
+            return employeesAvailability.find((employee) => employee.email === email) || {};
+        }
+
+        function buildScheduleAssignmentsPayload() {
+            const assignments = [];
+
+            shiftBlocks.forEach((block) => {
+                const selectedEmails = selectedEmployeesByShift[getShiftId(block)] || [];
+                selectedEmails.forEach((email) => {
+                    const employee = employeeByEmail(email);
+                    assignments.push({
+                        employee_email: email,
+                        employee_name: employee.name || "",
+                        work_date: block.dataset.workDate,
+                        day_name: block.dataset.dayKey,
+                        shift_type: block.dataset.shiftType,
+                        start_time: block.dataset.startTime,
+                        end_time: block.dataset.endTime,
+                        notes: ""
+                    });
+                });
+            });
+
+            return assignments;
+        }
+
+        if (saveScheduleForm && assignmentsPayload) {
+            saveScheduleForm.addEventListener("submit", () => {
+                assignmentsPayload.value = JSON.stringify(buildScheduleAssignmentsPayload());
+            });
+        }
+
+        function markFormSubmitting(form) {
+            if (form.dataset.confirm && !confirm(form.dataset.confirm)) {
+                return false;
+            }
+
+            if (form.dataset.submitting === "1") {
+                return false;
+            }
+
+            form.dataset.submitting = "1";
+            form.querySelectorAll("button").forEach((button) => {
+                button.dataset.originalText = button.textContent;
+                button.textContent = button.dataset.loadingText || "מעבד...";
+                button.disabled = true;
+                button.classList.add("is-loading");
+            });
+            return true;
+        }
+
+        document.querySelectorAll("form").forEach((form) => {
+            form.addEventListener("submit", (event) => {
+                if (!markFormSubmitting(form)) {
+                    event.preventDefault();
+                }
+            });
+        });
+
+        document.querySelectorAll("a[href]").forEach((link) => {
+            link.addEventListener("click", () => {
+                link.classList.add("is-loading");
+                link.setAttribute("aria-disabled", "true");
+            });
+        });
+
+        function getShiftId(block) {
+            return [
+                block.dataset.dayKey,
+                block.dataset.dayDate,
+                block.dataset.shiftName,
+                block.dataset.shiftHours
+            ].join("|");
+        }
+
+        function getAvailabilityStatus(employee, dayKey, shiftType) {
+            const constraints = employee.constraints || {};
+            const value = constraints[dayKey];
+
+            if (!value) {
+                return { color: "gray", label: "לא הוגשו אילוצים" };
+            }
+
+            if (value === "unavailable" || value === "not_available" || value === "day_off") {
+                return { color: "red", label: "לא זמין/ה למשמרת זו" };
+            }
+
+            if (
+                value === "all_day" ||
+                value === "full_day" ||
+                (shiftType === "morning" && value === "morning") ||
+                (shiftType === "evening" && value === "evening")
+            ) {
+                return { color: "green", label: "זמין/ה למשמרת זו" };
+            }
+
+            return { color: "yellow", label: "זמין/ה ביום זה" };
+        }
+
+        function updateAssignedWorkersDisplay(block) {
+            const shiftId = getShiftId(block);
+            const selectedEmails = selectedEmployeesByShift[shiftId] || [];
+            const assignedArea = block.querySelector(".assigned-workers");
+
+            detailAssignedCount.textContent = selectedEmails.length;
+
+            if (!selectedEmails.length) {
+                assignedArea.textContent = "לא שובץ עובד";
+                return;
+            }
+
+            const selectedNames = employeesAvailability
+                .filter((employee) => selectedEmails.includes(employee.email))
+                .map((employee) => employee.name);
+
+            assignedArea.textContent = selectedNames.join(", ");
+        }
+
+        function renderEmployeeList(block) {
+            const shiftId = getShiftId(block);
+            const selectedEmails = selectedEmployeesByShift[shiftId] || [];
+            employeeList.innerHTML = "";
+            assignmentWarning.classList.remove("is-visible");
+
+            if (!employeesAvailability.length) {
+                employeeList.innerHTML = '<div class="employees-empty">אין עובדים להצגה כרגע.</div>';
+                return;
+            }
+
+            employeesAvailability.forEach((employee) => {
+                const status = getAvailabilityStatus(employee, block.dataset.dayKey, block.dataset.shiftType);
+                const isSelected = selectedEmails.includes(employee.email);
+                const card = document.createElement("article");
+                card.className = "employee-card" + (isSelected ? " is-selected" : "");
+                card.innerHTML = `
+                    <div class="employee-main">
+                        <div>
+                            <div class="employee-name">${employee.name}</div>
+                            <div class="employee-job">${employee.job || employee.role || "עובד/ת חווה"}</div>
+                            <div class="availability-status ${status.color}">
+                                <span class="availability-dot" aria-hidden="true"></span>
+                                <span>${status.label}</span>
+                            </div>
+                        </div>
+                        <button class="select-employee-btn" type="button">${isSelected ? "נבחר/ה" : "בחר/י"}</button>
+                    </div>
+                `;
+
+                const selectButton = card.querySelector(".select-employee-btn");
+                selectButton.addEventListener("click", (event) => {
+                    event.stopPropagation();
+                    const currentSelected = selectedEmployeesByShift[shiftId] || [];
+                    const existingIndex = currentSelected.indexOf(employee.email);
+
+                    if (existingIndex >= 0) {
+                        currentSelected.splice(existingIndex, 1);
+                    } else {
+                        currentSelected.push(employee.email);
+                        if (status.color === "red") {
+                            assignmentWarning.classList.add("is-visible");
+                        }
+                    }
+
+                    selectedEmployeesByShift[shiftId] = currentSelected;
+                    renderEmployeeList(block);
+                    updateAssignedWorkersDisplay(block);
+                });
+
+                employeeList.appendChild(card);
+            });
+        }
+
+        function selectShift(block) {
+            activeShiftBlock = block;
+            shiftBlocks.forEach((item) => item.classList.remove("is-selected"));
+            block.classList.add("is-selected");
+            detailDay.textContent = "יום " + block.dataset.dayName;
+            detailDate.textContent = block.dataset.dayDate;
+            detailShift.textContent = block.dataset.shiftName;
+            detailHours.textContent = block.dataset.shiftHours;
+            selectedEmpty.style.display = "none";
+            selectedDetails.classList.add("is-visible");
+            assignmentPanel.classList.add("is-visible");
+            updateAssignedWorkersDisplay(block);
+            renderEmployeeList(block);
+        }
+
+        function clearSelectedShift() {
+            shiftBlocks.forEach((block) => block.classList.remove("is-selected"));
+            selectedEmpty.style.display = "flex";
+            selectedDetails.classList.remove("is-visible");
+            assignmentPanel.classList.remove("is-visible");
+            assignmentWarning.classList.remove("is-visible");
+            employeeList.innerHTML = "";
+            activeShiftBlock = null;
+        }
+
+        shiftBlocks.forEach((block) => {
+            block.addEventListener("click", () => {
+                selectShift(block);
+            });
+
+            const assignButton = block.querySelector(".assign-btn");
+            assignButton.addEventListener("click", (event) => {
+                event.stopPropagation();
+                selectShift(block);
+            });
+        });
+
+        dayCards.forEach((card) => {
+            const toggleButton = card.querySelector(".day-toggle-btn");
+            const badge = card.querySelector(".status-badge");
+
+            toggleButton.addEventListener("click", () => {
+                const isClosed = card.classList.toggle("is-closed");
+                badge.textContent = isClosed ? "יום סגור" : "פתוח";
+                toggleButton.textContent = isClosed ? "פתח יום" : "סמן כיום סגור";
+
+                if (isClosed && card.contains(activeShiftBlock)) {
+                    clearSelectedShift();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

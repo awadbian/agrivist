@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="tour-flow">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תשלום - {{ booking_draft.tour_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tour-flow.css') }}">
+</head>
+
+<body>
+    {% include 'line.html' %}
+
+    <main class="tour-step-page">
+        <section class="step-header">
+            <h1>{{ booking_draft.tour_title }}</h1>
+            <p>סיום ההזמנה</p>
+            <div class="step-indicator" aria-label="התקדמות ההזמנה">
+                <span class="done">✓</span>
+                <span class="done">✓</span>
+                <span class="done">✓</span>
+                <span class="active">4</span>
+            </div>
+        </section>
+
+        <form class="flow-card payment-card" method="POST">
+            <h2>תשלום</h2>
+            <p class="card-subtitle">השלימו את פרטי התשלום</p>
+
+            {% if success %}
+            <p class="flow-success">{{ success }}</p>
+            <a class="flow-primary-btn full-width" href="{{ url_for('tours') }}">חזרה לסיורים</a>
+            {% else %}
+            {% if error %}
+            <p class="flow-error">{{ error }}</p>
+            {% endif %}
+
+            <section class="order-summary">
+                <h3>סיכום הזמנה</h3>
+                <dl>
+                    <div><dt>סיור:</dt><dd>{{ booking_draft.tour_title }}</dd></div>
+                    <div><dt>תאריך:</dt><dd>{{ booking_draft.selected_date }}</dd></div>
+                    <div><dt>שעה:</dt><dd>{{ booking_draft.selected_time }}</dd></div>
+                    <div><dt>מספר משתתפים:</dt><dd>{{ booking_draft.participants }}</dd></div>
+                    <div class="total"><dt>סך הכל לתשלום:</dt><dd>₪{{ booking_draft.total_price }}</dd></div>
+                </dl>
+            </section>
+
+            <label>
+                מספר כרטיס *
+                <input type="text" inputmode="numeric" placeholder="1234 5678 9012 3456" required>
+            </label>
+
+            <label>
+                שם בעל הכרטיס *
+                <input type="text" placeholder="שם מלא כפי שמופיע על הכרטיס" required>
+            </label>
+
+            <div class="two-fields">
+                <label>
+                    תוקף *
+                    <input type="text" placeholder="MM/YY" required>
+                </label>
+
+                <label>
+                    CVV *
+                    <input type="text" inputmode="numeric" placeholder="123" required>
+                </label>
+            </div>
+
+            <p class="payment-note">התשלום מאובטח ומוצפן. המידע שלכם מוגן</p>
+
+            <div class="flow-actions">
+                <a class="flow-secondary-btn" href="{{ url_for('tour_details') }}">חזרה</a>
+                <button class="flow-primary-btn" type="submit">תשלום והזמנה - ₪{{ booking_draft.total_price }}</button>
+            </div>
+            {% endif %}
+        </form>
+    </main>
+</body>
+
+</html>

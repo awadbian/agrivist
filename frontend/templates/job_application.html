@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>טופס הגשת מועמדות</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f4ee;
+            color: #17462f;
+        }
+
+        .page {
+            min-height: 100vh;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 38px;
+            margin-bottom: 15px;
+            color: #17462f;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #4f7b5b;
+            margin-bottom: 45px;
+        }
+
+        .form-card {
+            background: white;
+            max-width: 620px;
+            margin: auto;
+            padding: 40px;
+            border-radius: 22px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .form-group {
+            text-align: right;
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #17462f;
+        }
+
+        .required {
+            color: #c0392b;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #b8d8bd;
+            border-radius: 12px;
+            font-size: 17px;
+            box-sizing: border-box;
+            direction: rtl;
+            background: #fbfffb;
+        }
+
+        textarea {
+            height: 140px;
+            resize: vertical;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-start;
+        }
+
+        .radio-option {
+            border: 1px solid #b8d8bd;
+            padding: 12px 30px;
+            border-radius: 12px;
+            background: #fbfffb;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #165c38;
+            color: white;
+            border: none;
+            padding: 17px;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: #0f472b;
+        }
+        .back-home {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #165c38;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.back-home:hover {
+    text-decoration: underline;
+}
+    </style>
+</head>
+
+<body>
+    <div class="page">
+
+    <a href="/" class="back-home">
+        ← חזרה לדף הראשי
+    </a>
+
+    <h1>טופס הגשת מועמדות 🌶️</h1>
+    <p class="subtitle">מלאו את הפרטים ונחזור אליכם בהקדם</p>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div style="background:#d4edda;color:#155724;padding:15px;border-radius:10px;margin-bottom:20px;">
+            {{ messages[0] }}
+        </div>
+    {% endif %}
+{% endwith %}
+
+        <form method="POST" class="form-card">
+
+            <div class="form-group">
+                <label>שם מלא <span class="required">*</span></label>
+                <input type="text" name="full_name" placeholder="הכניסו שם מלא" required>
+            </div>
+
+            <div class="form-group">
+                <label>אימייל <span class="required">*</span></label>
+                <input type="email" name="email" placeholder="example@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>טלפון <span class="required">*</span></label>
+                <input type="tel" name="phone" placeholder="05X-XXXXXXX" required>
+            </div>
+
+            <div class="form-group">
+                <label>האם עבדת בעבר? <span class="required">*</span></label>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="worked_before" value="1" required> כן
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="worked_before" value="0"> לא
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>ניסיון קודם / ספרו לנו על עצמכם</label>
+                <textarea name="experience" placeholder="ספרו לנו על הניסיון שלכם, כישורים, ועוד..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">שליחת מועמדות 🌶️</button>
+
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+pytest-cache-files-*/
+test-results/
+
+.env
+env/
+venv/
+.venv/
+
+.coverage
+htmlcov/
+
+.vscode/
+
+appsettings.json

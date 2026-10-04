@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>יצירת חשבון</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f5;
+            color: #1f2d1f;
+        }
+
+        .page-wrapper {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .signup-container {
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+        }
+
+        .signup-title {
+            font-size: 52px;
+            font-weight: bold;
+            color: #203728;
+            margin-bottom: 10px;
+        }
+
+        .signup-subtitle {
+            font-size: 28px;
+            color: #8d8b75;
+            margin-bottom: 40px;
+        }
+
+        .message {
+            max-width: 700px;
+            margin: 0 auto 25px;
+            padding: 16px 20px;
+            border-radius: 14px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #b7d8b9;
+        }
+
+        .signup-form {
+            text-align: right;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #203728;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 22px 24px;
+            border: 2px solid #d8d8d3;
+            border-radius: 22px;
+            font-size: 28px;
+            background: #fff;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #5b8f57;
+            box-shadow: 0 0 0 4px rgba(91, 143, 87, 0.12);
+        }
+
+        .form-group input::placeholder {
+            color: #aaa793;
+        }
+
+        .input-error {
+            border-color: #d76b6b !important;
+            background: #fff8f8;
+        }
+
+        .field-error {
+            color: #b23b3b;
+            font-size: 18px;
+            margin-top: 8px;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 12px;
+            margin: 15px 0 8px;
+            font-size: 24px;
+            color: #4d6e4a;
+            font-weight: 600;
+        }
+
+        .checkbox-row input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            accent-color: #5b8f57;
+        }
+
+        .signup-btn {
+            width: 100%;
+            border: none;
+            background: #5b8f57;
+            color: white;
+            padding: 22px;
+            font-size: 34px;
+            font-weight: bold;
+            border-radius: 22px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(91, 143, 87, 0.25);
+            transition: 0.3s;
+            margin-top: 18px;
+        }
+
+        .signup-btn:hover {
+            background: #4c7d48;
+            transform: translateY(-2px);
+        }
+
+        .bottom-links {
+            margin-top: 35px;
+            text-align: center;
+        }
+
+        .bottom-links p {
+            margin: 0 0 10px;
+            font-size: 26px;
+            color: #6b705c;
+        }
+
+        .bottom-links a {
+            color: #557f4f;
+            text-decoration: none;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .bottom-links a:hover {
+            text-decoration: underline;
+        }
+
+        .forgot-link {
+            display: block;
+            margin-top: 14px;
+            font-size: 32px !important;
+            font-weight: normal !important;
+            color: #8b866e !important;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .signup-title {
+                font-size: 38px;
+            }
+
+            .signup-subtitle {
+                font-size: 22px;
+            }
+
+            .form-group label,
+            .form-group input,
+            .signup-btn,
+            .bottom-links p,
+            .bottom-links a,
+            .forgot-link,
+            .message {
+                font-size: 20px !important;
+            }
+
+            .field-error {
+                font-size: 16px;
+            }
+
+            .signup-btn {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+{% include 'line.html' %}
+<div class="page-wrapper">
+    <div class="signup-container">
+        <h1 class="signup-title">יצירת חשבון חדש</h1>
+        <p class="signup-subtitle">הצטרפו אלינו לחוויה חקלאית בלתי נשכחת</p>
+
+        {% if success %}
+            <div class="message success-message">{{ success }}</div>
+        {% endif %}
+
+        <form class="signup-form" action="/signup" method="post">
+            <div class="form-group">
+                <label for="full_name">שם מלא</label>
+                <input
+                    type="text"
+                    id="full_name"
+                    name="full_name"
+                    placeholder="הזינו שם מלא"
+                    value="{{ form_data.full_name }}"
+                    class="{% if errors.full_name %}input-error{% endif %}"
+                >
+                {% if errors.full_name %}
+                    <div class="field-error">{{ errors.full_name }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="email">כתובת אימייל</label>
+                <input
+                    type="text"
+                    id="email"
+                    name="email"
+                    placeholder="example@email.com"
+                    value="{{ form_data.email }}"
+                    class="{% if errors.email %}input-error{% endif %}"
+                >
+                {% if errors.email %}
+                    <div class="field-error">{{ errors.email }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="password">סיסמה</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="לפחות 8 תווים"
+                    class="{% if errors.password %}input-error{% endif %}"
+                >
+                {% if errors.password %}
+                    <div class="field-error">{{ errors.password }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">אימות סיסמה</label>
+                <input
+                    type="password"
+                    id="confirm_password"
+                    name="confirm_password"
+                    placeholder="הזינו את הסיסמה שנית"
+                    class="{% if errors.confirm_password %}input-error{% endif %}"
+                >
+                {% if errors.confirm_password %}
+                    <div class="field-error">{{ errors.confirm_password }}</div>
+                {% endif %}
+            </div>
+
+            <div class="checkbox-row">
+                <input
+                    type="checkbox"
+                    id="terms"
+                    name="terms"
+                    {% if form_data.terms %}checked{% endif %}
+                >
+                <label for="terms">אני מסכים/ה לתנאי השימוש ולמדיניות הפרטיות</label>
+            </div>
+            {% if errors.terms %}
+                <div class="field-error">{{ errors.terms }}</div>
+            {% endif %}
+
+            <button type="submit" class="signup-btn">← צור חשבון</button>
+        </form>
+
+        <div class="bottom-links">
+    <p>כבר יש לך חשבון? <a href="/login">התחבר</a></p>
+
+</div>
+    </div>
+</div>
+
+</body>
+</html>

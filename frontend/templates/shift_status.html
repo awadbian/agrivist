@@ -1,0 +1,58 @@
+{% include "line.html" %}
+
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>סטטוס משמרת</title>
+</head>
+<body style="margin:0; font-family:Arial, sans-serif; background:#f4f7f1; direction:rtl;">
+
+<section style="padding:40px;">
+    <h1 style="color:#2f4f2f;">ניהול סטטוס משמרת</h1>
+    <p style="color:#555;">בדף זה העובד יכול להתחיל ולסיים משמרת, ולראות שעות עבודה ושכר יומי.</p>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+        {% for employee in employees %}
+        <div style="background:white; border-radius:20px; padding:24px; box-shadow:0 6px 18px rgba(0,0,0,0.07);">
+            <h3 style="color:#6f8f60;">{{ employee.name }}</h3>
+            <p style="direction:ltr; text-align:right;">{{ employee.email }}</p>
+
+            <div style="padding:12px; border-radius:14px; background:#eef5e8; color:#2f4f2f; font-weight:bold; text-align:center;">
+                {{ employee.status }}
+            </div>
+
+            <div style="margin-top:15px; line-height:1.9; color:#333;">
+                <p><strong>תחילת משמרת:</strong> {{ employee.attendance.start_shift or "-" }}</p>
+                <p><strong>סיום משמרת:</strong> {{ employee.attendance.end_shift or "-" }}</p>
+                <p><strong>שעות עבודה:</strong> {{ employee.attendance.worked_hours }}</p>
+                <p><strong>שכר יומי:</strong> {{ employee.attendance.daily_salary }} ₪</p>
+            </div>
+
+            {% if session.get("role") == "employee" and session.get("email") == employee.email %}
+                {% if employee.attendance.is_on_duty %}
+                    <form method="POST" action="/end-shift">
+                        <button type="submit" style="width:100%; padding:13px; border:none; border-radius:12px; background:#b94a48; color:white; font-weight:bold; cursor:pointer;">
+                            סיום משמרת
+                        </button>
+                    </form>
+                {% else %}
+                    <form method="POST" action="/start-shift">
+                        <button type="submit" style="width:100%; padding:13px; border:none; border-radius:12px; background:#6f8f60; color:white; font-weight:bold; cursor:pointer;">
+                            התחלת משמרת
+                        </button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div style="margin-top:32px;">
+        <a href="/employee-schedule" style="background:#6f8f60; color:white; padding:12px 20px; border-radius:12px; text-decoration:none;">חזרה למערכת שעות</a>
+        <a href="/weekly-shift-calendar" style="background:#2f4f2f; color:white; padding:12px 20px; border-radius:12px; text-decoration:none; margin-right:10px;">לוח שבועי</a>
+    </div>
+</section>
+
+</body>
+</html>

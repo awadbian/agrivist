@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>משוב על האתר</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f5f1;
+            color: #263b2b;
+        }
+
+        .feedback-page {
+            max-width: 760px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .feedback-card {
+            background: white;
+            border: 1px solid #d9e4d6;
+            border-radius: 18px;
+            padding: 34px;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+        }
+
+        .feedback-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            background: #b96748;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 34px;
+            margin: 0 0 8px;
+            color: #274b33;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f856d;
+            margin-bottom: 28px;
+        }
+
+        .stars {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 8px;
+            margin: 18px 0 30px;
+        }
+
+        .stars input {
+            display: none;
+        }
+
+        .stars label {
+            font-size: 44px;
+            color: #d7d7d7;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .stars input:checked ~ label,
+        .stars label:hover,
+        .stars label:hover ~ label {
+            color: #f5b400;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 140px;
+            border: 1px solid #d9e4d6;
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 16px;
+            resize: vertical;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            background: #f8f6f2;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: #4c8054;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cancel-link {
+            display: inline-block;
+            margin-top: 16px;
+            color: #4c8054;
+            text-decoration: none;
+        }
+
+        .flash {
+            margin-bottom: 16px;
+            padding: 12px;
+            border-radius: 10px;
+            background: #fff3cd;
+            color: #6b5200;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'line.html' %}
+
+    <main class="feedback-page">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <section class="feedback-card">
+            <div class="feedback-icon">💬</div>
+
+            <h1>מה דעתך על האתר?</h1>
+            <p class="subtitle">המשוב שלך עוזר לנו לשפר את חוויית המשתמש באתר</p>
+
+            <form method="POST">
+                <div class="stars">
+                    <input type="radio" id="star5" name="rating" value="5">
+                    <label for="star5">★</label>
+
+                    <input type="radio" id="star4" name="rating" value="4">
+                    <label for="star4">★</label>
+
+                    <input type="radio" id="star3" name="rating" value="3">
+                    <label for="star3">★</label>
+
+                    <input type="radio" id="star2" name="rating" value="2">
+                    <label for="star2">★</label>
+
+                    <input type="radio" id="star1" name="rating" value="1">
+                    <label for="star1">★</label>
+                </div>
+
+                <label for="comment"><strong>הערות נוספות</strong></label>
+                <textarea id="comment" name="comment" placeholder="כתבי כאן מה אהבת באתר ומה אפשר לשפר..."></textarea>
+
+                <button class="submit-btn" type="submit">שליחת משוב</button>
+            </form>
+
+            <a class="cancel-link" href="{{ url_for('home') }}">חזרה לדף הבית</a>
+        </section>
+    </main>
+</body>
+
+</html>

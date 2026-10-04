@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>ממשק ניהול</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            direction: rtl;
+            background-color: #f7f8f5;
+            color: #173b2b;
+        }
+
+        .admin-page {
+            padding: 25px 70px;
+        }
+
+        .admin-header {
+            text-align: right;
+            margin-bottom: 25px;
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            font-size: 34px;
+            color: #173b2b;
+        }
+
+        .admin-header p {
+            margin-top: 8px;
+            color: #8b9388;
+            font-size: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #dce8d8;
+            border-radius: 14px;
+            padding: 20px;
+            min-height: 95px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .stat-number {
+            font-size: 26px;
+            color: #173b2b;
+            margin-bottom: 22px;
+        }
+
+        .stat-label {
+            color: #68766a;
+            font-size: 15px;
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #eef5ee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .orange {
+            background: #fff4e8;
+        }
+
+        .red {
+            background: #fff0ec;
+        }
+
+.admin-quick-actions {
+    margin: 28px 0 34px;
+}
+
+.admin-action-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 34px;
+    width: 100%;
+    min-height: 184px;
+    background:
+        radial-gradient(circle at 8% 30%, rgba(255, 255, 255, 0.34) 0 48px, transparent 49px),
+        radial-gradient(circle at 100% 92%, rgba(255, 255, 255, 0.16) 0 112px, transparent 113px),
+        linear-gradient(135deg, #4f8a5f 0%, #5e9769 48%, #477d54 100%);
+    border: 1px solid #4f8a5f;
+    border-right: 8px solid #376d41;
+    border-radius: 22px;
+    padding: 36px 44px;
+    color: #ffffff;
+    box-shadow: 0 22px 46px rgba(48, 85, 54, 0.24);
+}
+
+.admin-action-main {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.admin-action-text h2 {
+    margin: 0;
+    font-size: 38px;
+    line-height: 1.35;
+    color: #ffffff;
+    font-weight: 900;
+}
+
+.admin-action-english {
+    margin: 5px 0 0;
+    color: #dcefd8;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.admin-action-description {
+    margin: 7px 0 0;
+    color: #eef7ec;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.admin-action-icon {
+    flex: 0 0 82px;
+    width: 82px;
+    height: 82px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.admin-action-side {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+    margin-left: 42px;
+}
+
+.admin-action-enter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    background: #4f7f4d;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 900;
+    text-decoration: none;
+    white-space: nowrap;
+    box-shadow: 0 12px 26px rgba(20, 47, 24, 0.24);
+    cursor: pointer;
+    transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.admin-action-enter:hover {
+    background: #3f6f41;
+    transform: translateY(-2px);
+    box-shadow: 0 13px 26px rgba(63, 111, 65, 0.3);
+}
+
+.admin-action-enter:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, 0.55);
+    outline-offset: 4px;
+}
+
+
+ .admin-tabs {
+    margin-top: 35px;
+    background: #f3f0ec;
+    border-radius: 14px;
+    padding: 6px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    direction: rtl;
+    flex-wrap: nowrap;
+}
+
+.tab {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    text-decoration: none;
+    color: #173b2b;
+    padding: 9px 6px;
+    border-radius: 12px;
+    font-weight: bold;
+    white-space: nowrap;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.tab.active {
+    background: white;
+    border: 1px solid #e2ded8;
+}
+
+.reports-grid {
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.report-card {
+    background: white;
+    border: 1px solid #dce8d8;
+    border-radius: 14px;
+    padding: 24px;
+    min-height: 120px;
+}
+
+.report-card h3 {
+    margin: 0;
+    color: #173b2b;
+    font-size: 18px;
+}
+
+.report-number {
+    margin-top: 25px;
+    font-size: 30px;
+    color: #173b2b;
+}
+
+.report-card p {
+    color: #7d8a7d;
+    margin-top: 22px;
+}
+
+.admin-footer {
+    margin-top: 45px;
+    background: #f1eee9;
+    border-top: 8px solid #4f7f4d;
+    padding: 55px 80px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    text-align: center;
+}
+
+.footer-section h3 {
+    color: #173b2b;
+    margin-bottom: 25px;
+}
+
+.footer-section p {
+    color: #8a8274;
+    font-size: 18px;
+    margin: 12px 0;
+}
+
+.management-section {
+    background: white;
+    border: 1px solid #dce8d8;
+    border-radius: 14px;
+    padding: 22px;
+    margin: 24px 70px 0;
+}
+
+.management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.management-header h2 {
+    margin: 0;
+    color: #173b2b;
+    font-size: 22px;
+}
+
+.management-header p {
+    margin: 6px 0 0;
+    color: #8b9388;
+    font-size: 14px;
+}
+
+.management-search {
+    width: 230px;
+    border: none;
+    background: #f3f0ec;
+    border-radius: 8px;
+    padding: 12px 16px;
+    outline: none;
+}
+
+.management-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.management-card {
+    border: 1px solid #dce8d8;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+}
+
+.person-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.person-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #eef5ee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.person-name {
+    font-weight: bold;
+    color: #173b2b;
+    margin-bottom: 6px;
+}
+
+.person-line {
+    color: #68766a;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.status {
+    font-size: 12px;
+    padding: 3px 9px;
+    border-radius: 12px;
+    margin-right: 8px;
+}
+
+.status.active {
+    background: #4f7f4d;
+    color: white;
+}
+
+.status.inactive {
+    background: #e3a96a;
+    color: #3d2c15;
+}
+
+.person-side {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+}
+
+.person-side span {
+    display: block;
+    color: #8b9388;
+    font-size: 13px;
+}
+
+.person-side strong {
+    color: #173b2b;
+    font-size: 14px;
+}
+
+.edit-btn {
+    border: 1px solid #dce8d8;
+    border-radius: 8px;
+    padding: 8px 14px;
+    background: white;
+    text-decoration: none;
+    color: #173b2b;
+}
+
+.activate-btn {
+    border: 1px solid #dce8d8;
+    border-radius: 8px;
+    padding: 8px 14px;
+    background: white;
+    text-decoration: none;
+    color: #173b2b;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.activate-btn:hover {
+    background: #eef5ee;
+}
+
+.delete-btn {
+    border: none;
+    background: #dc1745;
+    color: white;
+    border-radius: 8px;
+    padding: 9px 12px;
+    cursor: pointer;
+}
+
+.empty-message {
+    color: #8b9388;
+    text-align: center;
+}
+.tab {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 15px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.cancel-booking-btn {
+    border: none;
+    background: #dc1745;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.cancel-booking-btn:hover {
+    background: #b91439;
+}
+
+.navigate-btn {
+    background: #4f7f4d;
+    color: white;
+    text-decoration: none;
+    border-radius: 9px;
+    padding: 11px 18px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.navigate-btn:hover {
+    background: #3f6f41;
+}
+
+.management-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+
+.heat-pill {
+    border: 1px solid #dce8d8;
+    border-radius: 12px;
+    padding: 3px 9px;
+    font-size: 12px;
+    margin-right: 8px;
+    color: #173b2b;
+    background: white;
+}
+
+.green-text {
+    color: #0a9b45;
+} 
+.application-card {
+    border: 1px solid #dce8d8;
+    border-radius: 18px;
+    padding: 22px 26px;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 28px;
+    box-shadow: 0 4px 14px rgba(23, 59, 43, 0.04);
+}
+
+.application-card .person-main {
+    flex: 1;
+    align-items: flex-start;
+}
+
+.application-card .person-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #fff7df;
+    color: #d69b00;
+    font-size: 28px;
+}
+
+.application-details {
+    flex: 1;
+}
+
+.application-details .person-name {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.application-details .person-line {
+    font-size: 15px;
+    margin-top: 8px;
+}
+
+.experience-preview {
+    margin-top: 18px;
+    background: #f7f5f2;
+    border-radius: 10px;
+    padding: 14px 18px;
+    color: #5f6f62;
+    line-height: 1.7;
+}
+
+.application-actions {
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.application-actions form {
+    margin: 0;
+}
+
+.details-btn,
+.approve-btn,
+.reject-btn {
+    width: 100%;
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.details-btn {
+    border: 1px solid #dce8d8;
+    background: white;
+    color: #173b2b;
+}
+
+.approve-btn {
+    border: none;
+    background: #07993f;
+    color: white;
+}
+
+.reject-btn {
+    border: none;
+    background: #d41445;
+    color: white;
+}
+
+.details-btn:hover {
+    background: #eef5ee;
+}
+
+.approve-btn:hover {
+    background: #087f36;
+}
+
+.reject-btn:hover {
+    background: #b9113a;
+}
+
+.status.pending {
+    background: #f2c94c;
+    color: #3d2c15;
+}
+
+.status.rejected {
+    background: #dc1745;
+    color: white;
+}
+
+.status.accepted {
+    background: #0a9b45;
+    color: white;
+}
+
+.application-modal {
+    border: none;
+    border-radius: 20px;
+    padding: 0;
+    width: 560px;
+    max-width: 92%;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.30);
+}
+
+
+.application-modal::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.modal-content {
+    padding: 36px 42px;
+    background: white;
+    color: #173b2b;
+    border-radius: 20px;
+}
+
+.modal-content h3 {
+    margin: 0 0 26px;
+    font-size: 30px;
+    text-align: center;
+    color: #173b2b;
+}
+
+.modal-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 16px 0;
+    color: #173b2b;
+}
+
+.modal-icon {
+    width: 30px;
+    text-align: center;
+    font-size: 21px;
+    color: #4f7f4d;
+}
+.modal-row small {
+    display: block;
+    color: #8b9388;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+.modal-row strong {
+    display: block;
+    color: #173b2b;
+    font-size: 17px;
+}
+.modal-separator {
+    border: none;
+    border-top: 1px solid #e3eadf;
+    margin: 24px 0;
+}
+
+
+.experience-box {
+    background: #f7f5f2;
+    border-radius: 12px;
+    padding: 18px 20px;
+    line-height: 1.9;
+    color: #68766a;
+    margin-top: 10px;
+    margin-bottom: 24px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.modal-buttons form {
+    flex: 1;
+    margin: 0;
+}
+
+
+.modal-buttons .approve-btn,
+.modal-buttons .reject-btn {
+    width: 100%;
+    border-radius: 10px;
+    padding: 13px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.close-modal-btn {
+    border: 1px solid #dce8d8;
+    background: white;
+    color: #173b2b;
+    border-radius: 10px;
+    padding: 11px 22px;
+    margin-top: 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+@media (max-width: 900px) {
+    .admin-page,
+    .management-section {
+        margin: 0;
+        padding: 18px;
+    }
+
+
+    .stats-grid,
+    .reports-grid,
+    .admin-footer,
+    .admin-quick-actions,
+    .admin-tabs {
+        grid-template-columns: 1fr;
+    }
+
+    .management-header,
+    .management-card,
+    .admin-action-card,
+    .admin-action-main,
+    .admin-action-side,
+    .person-side {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .admin-action-card {
+        gap: 18px;
+        padding: 22px;
+    }
+
+    .admin-action-side {
+        margin-left: 0;
+    }
+
+}
+
+
+</style>
+</head>
+
+<body>
+
+    {% include "line.html" %}
+
+    <main class="admin-page">
+
+        <div class="admin-header">
+            <h1>ממשק ניהול</h1>
+            <p>ניהול החווה והמערכת הדיגיטלית</p>
+        </div>
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div>
+                    <div class="stat-number">{{ stats.tours_this_week }}</div>
+                    <div class="stat-label">סיורים השבוע</div>
+                </div>
+                <div class="stat-icon">📅</div>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <div class="stat-number">{{ stats.pending_bookings }}</div>
+                    <div class="stat-label">סיורים עתידיים </div>
+                </div>
+                <div class="stat-icon red">🚌</div>      
+                </div>
+
+            <div class="stat-card">
+                <div>
+                    <div class="stat-number">{{ stats.users_count }}</div>
+                    <div class="stat-label">מבקרים החודש</div>
+                </div>
+                <div class="stat-icon orange">👥</div>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <div class="stat-number">{{ stats.active_peppers }}</div>
+                    <div class="stat-label">זנים פעילים</div>
+                </div>
+                <div class="stat-icon">🌿</div>
+            </div>
+
+        </section>
+
+    </main>
+
+<div class="admin-tabs">
+    <button class="tab active" type="button" onclick="showAdminTab('reports', this)">
+        📊 דוחות
+    </button>
+
+    <button class="tab" type="button" onclick="showAdminTab('users', this)">
+        👥 משתמשים
+    </button>
+
+    <button class="tab" type="button" onclick="showAdminTab('candidates', this)">
+    💼 מועמדים
+    </button>
+
+    <button class="tab" type="button" onclick="showAdminTab('plants', this)">
+    🌿 צמחים
+    </button>
+
+    <button class="tab" type="button" onclick="showAdminTab('tours', this)">
+    🚌 ניהול סיורים
+    </button>
+
+
+    <button class="tab" type="button" onclick="showAdminTab('bookings', this)">
+    📅 הזמנות
+    </button>
+
+    <button class="tab" type="button" onclick="showAdminTab('farmmap', this)">
+    🗺️ מפת החווה
+</button>
+
+</div>
+
+<section id="reports-tab" class="tab-content active">
+    <div class="reports-grid">
+        <div class="report-card">
+            <h3>סה״כ מבקרים 👥</h3>
+            <div class="report-number">{{ stats.users_count }}</div>
+            <p>משתמשים רשומים במערכת</p>
+        </div>
+
+        <div class="report-card">
+            <h3>סיורים החודש 📊</h3>
+            <div class="report-number">{{ stats.tours_this_month }}</div>
+            <p>נתון זמני עד חיבור טבלת סיורים</p>
+        </div>
+
+        <div class="report-card">
+            <h3>זנים פעילים 🌿</h3>
+            <div class="report-number">{{ stats.active_peppers }}</div>
+            <p>זנים קיימים במערכת</p>
+        </div>
+
+        <div class="report-card">
+            <h3>שביעות רצון ✅</h3>
+            <div class="report-number">{{ stats.satisfaction_average }}/5</div>
+            <p>מבוסס על {{ stats.satisfaction_count }} דירוגים מהאתר ומהסיורים</p>
+        </div>
+    </div>
+
+</section>
+
+<section id="users-tab" class="tab-content">
+    <section class="management-section">
+        <div class="management-header">
+            <div>
+                <h2>משתמשים רשומים</h2>
+                <p>{{ users|length }} משתמשים במערכת</p>
+        </div>
+        <input type="text" class="management-search" placeholder="חיפוש משתמש...">
+    </div>
+
+    <div class="management-list">
+        {% for user in users %}
+        <div class="management-card">
+            <div class="person-main">
+                <div class="person-icon">👤</div>
+
+                <div>
+                    <div class="person-name">
+                        {{ user.full_name }}
+
+                        {% if user.is_active %}
+                            <span class="status active">פעיל</span>
+                        {% else %}
+                            <span class="status inactive">לא פעיל</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="person-line">✉ {{ user.email }}</div>
+                    <div class="person-line">☎ {{ user.phone or "לא הוזן" }}</div>
+                </div>
+            </div>
+
+            <div class="person-side">
+                <div>
+                    <span>הצטרף</span>
+                    <strong>{{ user.created_at.strftime("%Y-%m-%d") if user.created_at else "-" }}</strong>
+                </div>
+
+                <div>
+                    <span>תפקיד</span>
+                    <strong>מבקר רגיל</strong>
+                </div>
+
+                <form method="POST" action="{{ url_for('activate_admin_user', user_id=user.id) }}">
+    <button type="submit" class="activate-btn">הפעל</button>
+</form>
+
+<form method="POST"
+      action="{{ url_for('deactivate_admin_user', user_id=user.id) }}"
+      onsubmit="return confirm('האם אתה בטוח שברצונך לבטל את החשבון הזה?');">
+    <button type="submit" class="delete-btn">🗑</button>
+</form>
+
+            </div>
+        </div>
+                        {% else %}
+        <p class="empty-message">אין משתמשים רשומים להצגה.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="management-section">
+    <div class="management-header">
+        <div>
+            <h2>עובדי חווה</h2>
+            <p>{{ workers|length }} עובדים במערכת</p>
+        </div>
+        <input type="text" class="management-search" placeholder="חיפוש עובד...">
+    </div>
+
+    <div class="management-list">
+        {% for worker in workers %}
+        <div class="management-card">
+            <div class="person-main">
+                <div class="person-icon">🛡</div>
+
+                <div>
+                    <div class="person-name">
+                        {{ worker.full_name or worker.username or worker.name or worker.email }}
+
+                        {% if worker.is_active %}
+                            <span class="status active">פעיל</span>
+                        {% else %}
+                            <span class="status inactive">לא פעיל</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="person-line">✉ {{ worker.email }}</div>
+                    <div class="person-line">☎ {{ worker.phone or "לא הוזן" }}</div>
+                </div>
+            </div>
+
+            <div class="person-side">
+                <div>
+                    <span>הצטרף</span>
+                    <strong>{{ worker.created_at.strftime("%Y-%m-%d") if worker.created_at else "-" }}</strong>
+                </div>
+
+                <div>
+                    <span>תפקיד</span>
+                    <strong>עובד חווה</strong>
+                </div>
+
+                <form method="POST" action="{{ url_for('activate_admin_user', user_id=worker.id) }}">
+                    <button type="submit" class="activate-btn">הפעל</button>
+                </form>
+
+                <form method="POST"
+                      action="{{ url_for('deactivate_admin_user', user_id=worker.id) }}"
+                      onsubmit="return confirm('האם אתה בטוח שברצונך לבטל את החשבון הזה?');">
+                    <button type="submit" class="delete-btn">🗑</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <p class="empty-message">אין עובדי חווה להצגה.</p>
+        {% endfor %}
+    </div>
+</section>
+
+</section>
+
+
+<section id="candidates-tab" class="tab-content">
+    <section class="management-section">
+        <div class="management-header">
+            <div>
+                <h2>ניהול מועמדים</h2>
+                <p>מועמדויות ממתינות לטיפול</p>
+            </div>
+            <input type="text" class="management-search" placeholder="חיפוש מועמד...">
+        </div>
+
+        <div class="management-list">
+            {% for application in job_applications %}
+            <div class="application-card">
+    <div class="person-main">
+        <div class="person-icon">💼</div>
+
+        <div class="application-details">
+            <div class="person-name">
+                {{ application.full_name }}
+
+                {% if application.status == "pending" %}
+                    <span class="status pending">ממתין</span>
+                {% elif application.status == "accepted" %}
+                    <span class="status accepted">אושר</span>
+                {% elif application.status == "rejected" %}
+                    <span class="status rejected">נדחה</span>
+                {% endif %}
+            </div>
+
+            <div class="person-line">💼 {{ application.position or "תפקיד לא צוין" }}</div>
+            <div class="person-line">✉ {{ application.email }}</div>
+            <div class="person-line">☎ {{ application.phone }}</div>
+
+            <div class="person-line">
+                🕘 הוגש:
+                {{ application.created_at.strftime("%Y-%m-%d") if application.created_at else "-" }}
+            </div>
+
+            <div class="experience-preview">
+                📄 ניסיון:
+                {{ application.experience }}
+            </div>
+        </div>
+    </div>
+
+    <div class="application-actions">
+        <button class="details-btn" type="button"
+                onclick="document.getElementById('application-modal-{{ application.id }}').showModal()">
+            👁 צפה בפרטים
+        </button>
+
+        {% if application.status == "pending" %}
+        <form method="POST"
+              action="{{ url_for('approve_admin_job_application', application_id=application.id) }}">
+            <button type="submit" class="approve-btn">✓ אשר</button>
+        </form>
+
+        <form method="POST"
+              action="{{ url_for('reject_admin_job_application', application_id=application.id) }}"
+              onsubmit="return confirm('האם את בטוחה שברצונך לדחות את המועמד?')">
+            <button type="submit" class="reject-btn">✕ דחה</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+<dialog id="application-modal-{{ application.id }}" class="application-modal">
+    <div class="modal-content">
+        <h3>💼 פרטי מועמד</h3>
+
+        <div class="modal-row">
+            <span class="modal-icon">👤</span>
+            <div>
+                <small>שם מלא</small>
+                <strong>{{ application.full_name }}</strong>
+            </div>
+        </div>
+
+        <div class="modal-row">
+            <span class="modal-icon">✉</span>
+            <div>
+                <small>אימייל</small>
+                <strong>{{ application.email }}</strong>
+            </div>
+        </div>
+
+        <div class="modal-row">
+            <span class="modal-icon">☎</span>
+            <div>
+                <small>טלפון</small>
+                <strong>{{ application.phone }}</strong>
+            </div>
+        </div>
+
+        <div class="modal-row">
+            <span class="modal-icon">🧾</span>
+            <div>
+                <small>ניסיון קודם</small>
+                <strong>
+                    {% if application.worked_before %}
+                        כן
+                    {% else %}
+                        לא
+                    {% endif %}
+                </strong>
+            </div>
+        </div>
+
+        <div class="modal-row">
+            <span class="modal-icon">🏷</span>
+            <div>
+                <small>סטטוס</small>
+                <strong>
+                    {% if application.status == "pending" %}
+                        ממתין
+                    {% elif application.status == "accepted" %}
+                        אושר
+                    {% elif application.status == "rejected" %}
+                        נדחה
+                    {% else %}
+                        {{ application.status }}
+                    {% endif %}
+                </strong>
+            </div>
+        </div>
+
+        <hr class="modal-separator">
+
+        <div class="modal-row">
+            <span class="modal-icon">📄</span>
+            <div>
+                <small>ניסיון מקצועי</small>
+            </div>
+        </div>
+
+        <div class="experience-box">
+            {{ application.experience }}
+        </div>
+
+        {% if application.status == "pending" %}
+        <div class="modal-buttons">
+            <form method="POST"
+                  action="{{ url_for('approve_admin_job_application', application_id=application.id) }}">
+                <button type="submit" class="approve-btn">✓ אשר מועמד</button>
+            </form>
+
+            <form method="POST"
+                  action="{{ url_for('reject_admin_job_application', application_id=application.id) }}"
+                  onsubmit="return confirm('האם את בטוחה שברצונך לדחות את המועמד?')">
+                <button type="submit" class="reject-btn">✕ דחה מועמד</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <button type="button" class="close-modal-btn"
+                onclick="document.getElementById('application-modal-{{ application.id }}').close()">
+            סגור
+        </button>
+    </div>
+</dialog>>
+
+            {% else %}
+            <p class="empty-message">אין בקשות עבודה להצגה.</p>
+            {% endfor %}
+        </div>
+    </section>
+</section>
+
+
+<section id="bookings-tab" class="tab-content">
+    <section class="management-section">
+        <div class="management-header">
+            <div>
+                <h2>ניהול הזמנות סיורים</h2>
+                <p>{{ bookings|length }} הזמנות במערכת</p>
+            </div>
+
+            <input type="text" class="management-search" placeholder="חיפוש הזמנה...">
+        </div>
+
+        <div class="management-list">
+            {% for booking in bookings %}
+            <div class="management-card">
+                <div class="person-main">
+                    <div class="person-icon">📅</div>
+
+                    <div>
+                        <div class="person-name">
+                            {{ booking.full_name }}
+
+                            {% if booking.status == "cancelled" %}
+                                <span class="status inactive">מבוטלת</span>
+                            {% else %}
+                                <span class="status active">פעילה</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="person-line">✉ {{ booking.email }}</div>
+                        <div class="person-line">☎ {{ booking.phone }}</div>
+
+                        {% if booking.notes %}
+                            <div class="person-line">📝 {{ booking.notes }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="person-side">
+                    <div>
+                        <span>סוג סיור</span>
+                        <strong>{{ booking.tour_type }}</strong>
+                    </div>
+
+                    <div>
+                        <span>תאריך</span>
+                        <strong>{{ booking.preferred_date }}</strong>
+                    </div>
+
+                    <div>
+                        <span>שעה</span>
+                        <strong>{{ booking.preferred_time }}</strong>
+                    </div>
+
+                    <div>
+                        <span>משתתפים</span>
+                        <strong>{{ booking.participants }}</strong>
+                    </div>
+
+                    {% if booking.status != "cancelled" %}
+                    <form method="POST"
+                          action="{{ url_for('cancel_admin_booking', booking_id=booking.id) }}"
+                          onsubmit="return confirm('האם אתה בטוח שברצונך לבטל את ההזמנה הזאת?');">
+                        <button type="submit" class="cancel-booking-btn">בטל הזמנה</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <p class="empty-message">אין הזמנות להצגה.</p>
+            {% endfor %}
+        </div>
+    </section>
+</section>
+
+<section id="plants-tab" class="tab-content">
+    <section class="management-section">
+        <div class="management-header">
+            <div>
+                <h2>ניהול זני פלפלים</h2>
+                <p>{{ peppers|length }} זנים קיימים במערכת</p>
+            </div>
+
+            <a href="{{ url_for('pepper_varieties') }}" class="navigate-btn">
+                🌿 מעבר לדף זני הפלפלים
+            </a>
+        </div>
+
+        <div class="management-list">
+            {% for pepper in peppers %}
+            <div class="management-card">
+                <div class="person-main">
+                    <div class="person-icon">🌿</div>
+
+                    <div>
+                        <div class="person-name">
+                            {{ pepper.name }}
+
+                            {% if pepper.heat_level_name %}
+                                <span class="heat-pill">{{ pepper.heat_level_name }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="person-line">🌶 סקוביל: {{ pepper.scoville_level or "לא צוין" }}</div>
+                        <div class="person-line">🌍 מקור: {{ pepper.origin_country or "לא צוין" }}</div>
+                        <div class="person-line">🎨 צבע: {{ pepper.color or "לא צוין" }}</div>
+                    </div>
+                </div>
+
+                <div class="person-side">
+                    <div>
+                        <span>סטטוס</span>
+                        {% if pepper.status == "active" or pepper.status == "צומח" %}
+                            <strong class="green-text">{{ pepper.status }}</strong>
+                        {% else %}
+                            <strong>{{ pepper.status or "לא צוין" }}</strong>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <span>רמת חריפות</span>
+                        <strong>{{ pepper.heat_level_name or pepper.heat_category or "לא צוין" }}</strong>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p class="empty-message">אין זני פלפלים להצגה.</p>
+            {% endfor %}
+        </div>
+    </section>
+</section>
+
+<section id="tours-tab" class="tab-content">
+    <section class="management-section">
+        <div class="management-header">
+            <div>
+                <h2>ניהול סיורים</h2>
+                <p>{{ tours|length }} סיורים במערכת</p>
+            </div>
+
+            <div class="management-actions">
+                <a href="{{ url_for('add_tour') }}" class="navigate-btn">+ הוספת סיור</a>
+                <a href="{{ url_for('tours') }}" class="edit-btn">צפייה בעמוד ניהול הסיורים</a>
+            </div>
+        </div>
+
+        <div class="management-list">
+            {% for tour in tours %}
+            <div class="management-card">
+                <div class="person-main">
+                    <div class="person-icon">🚌</div>
+
+                    <div>
+                        <div class="person-name">
+                            {{ tour.title }}
+                            {% if tour.is_active %}
+                                <span class="status active">פעיל</span>
+                            {% else %}
+                                <span class="status inactive">לא פעיל</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="person-line">₪ {{ tour.price }} לאדם</div>
+                        <div class="person-line">
+                            משך:
+                            {% if tour.duration_minutes %}
+                                {{ tour.duration_minutes }} דקות
+                            {% else %}
+                                {{ tour.duration or "-" }}
+                            {% endif %}
+                        </div>
+                        <div class="person-line">עד {{ tour.max_people }} משתתפים</div>
+                    </div>
+                </div>
+
+                <div class="person-side">
+                    <div>
+                        <span>זמינות</span>
+                        <strong>
+                            {% if tour.available_from or tour.available_until %}
+                                {{ tour.available_from or "פתוח" }} - {{ tour.available_until or "פתוח" }}
+                            {% else %}
+                                ללא הגבלה
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <a class="edit-btn" href="{{ url_for('edit_tour', package_id=tour.id) }}">עריכה</a>
+
+                    <form method="POST"
+                          action="{{ url_for('delete_tour', package_id=tour.id) }}"
+                          onsubmit="return confirm('האם למחוק את הסיור הזה?');">
+                        <button type="submit" class="delete-btn">🗑</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <p class="empty-message">אין סיורים להצגה.</p>
+            {% endfor %}
+        </div>
+    </section>
+</section>
+
+<section id="farmmap-tab" class="tab-content">
+    <section class="management-section">
+        <div class="management-header">
+            <div>
+                <h2>🗺️ מפת החווה</h2>
+                <p>תצוגת המפה הכללית של החווה</p>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <img src="{{ url_for('static', filename='images/farm-map.jpg.jpeg') }}" 
+                 alt="מפת החווה" style="width:100%; border-radius:10px;">
+        </div>
+    </section>
+</section>
+
+
+<footer class="admin-footer">
+    <div class="footer-section">
+        <h3>חוות הפלפלים - עוטף עזה</h3>
+        <p>מרכז מבקרים חקלאי ייחודי המתמחה בגידול זני</p>
+        <p>פלפלים חריפים מכל רחבי העולם</p>
+    </div>
+
+    <div class="footer-section">
+        <h3>קישורים מהירים</h3>
+        <p>אודות החווה</p>
+        <p>זני פלפלים</p>
+        <p>הזמנת סיורים</p>
+    </div>
+
+    <div class="footer-section">
+        <h3>פרטי התקשרות</h3>
+        <p>עוטף עזה, ישראל</p>
+    </div>
+</footer>
+
+<script>
+    function showAdminTab(tabName, clickedButton) {
+        const contents = document.querySelectorAll(".tab-content");
+        contents.forEach(content => {
+            content.classList.remove("active");
+        });
+
+        const tabs = document.querySelectorAll(".tab");
+        tabs.forEach(tab => {
+            tab.classList.remove("active");
+        });
+
+        const selectedContent = document.getElementById(tabName + "-tab");
+        if (selectedContent) {
+            selectedContent.classList.add("active");
+        }
+
+        clickedButton.classList.add("active");
+    }
+</script>
+
+</body>
+</html>

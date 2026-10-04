@@ -1,0 +1,81 @@
+{% include "line.html" %}
+
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>נתוני העובדים</title>
+</head>
+
+<body style="margin:0; font-family:Arial, sans-serif; background:#f7faf5; direction:rtl;">
+
+<section style="padding:40px;">
+
+    <div style="margin-bottom:35px;">
+        <h1 style="color:#173b2f; font-size:40px; margin:0 0 10px;">
+           נתוני העובדים
+        </h1>
+
+        <p style="color:#6f776b; font-size:18px; margin:0;">
+            בדף זה ניתן לראות את כל העובדים, מספר המשמרות שלהם ולעבור לצפייה בפרטי העובד.
+        </p>
+    </div>
+
+    <a href="/admin/view-all-employees"
+       style="display:inline-flex; align-items:center; gap:8px; background:#4f7f4f; color:white; padding:12px 22px; border-radius:8px; text-decoration:none; font-weight:bold; margin-bottom:26px;">
+        👥 הצגת כל העובדים
+    </a>
+
+    <div style="background:white; padding:24px; border:1px solid #d8e5d2; border-radius:16px; box-shadow:0 6px 18px rgba(32,39,31,0.06); overflow:auto;">
+
+        <table style="width:100%; border-collapse:collapse; min-width:850px; overflow:hidden; border-radius:12px;">
+            <tr style="background:#4f7f4f; color:white;">
+                <th style="padding:18px; text-align:right;">שם עובד</th>
+                <th style="padding:18px; text-align:center;">אימייל</th>
+                <th style="padding:18px; text-align:center;">שכר לשעה</th>
+                <th style="padding:18px; text-align:center;">מספר משמרות</th>
+                <th style="padding:18px; text-align:center;">פעולה</th>
+            </tr>
+
+            {% for employee in employees %}
+            <tr style="text-align:center; background:#fafafa;">
+                <td style="padding:18px; border-bottom:1px solid #d8e5d2; text-align:right;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="width:42px; height:42px; background:#eef5e8; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                            👥
+                        </div>
+                        <strong style="color:#173b2f;">{{ employee.name }}</strong>
+                    </div>
+                </td>
+
+                <td style="padding:18px; border-bottom:1px solid #d8e5d2; color:#4f7f4f;" dir="ltr">
+                    ✉ {{ employee.email }}
+                </td>
+
+                <td style="padding:18px; border-bottom:1px solid #d8e5d2; font-weight:bold; color:#173b2f;">
+                    {{ employee.hourly_rate }} ₪
+                </td>
+
+                <td style="padding:18px; border-bottom:1px solid #d8e5d2; font-weight:bold; color:#173b2f;">
+                    📅 {{ employee.shifts|length }}
+                </td>
+
+                <td style="padding:18px; border-bottom:1px solid #d8e5d2;">
+                    <a href="/admin/view-as-employee/{{ employee.email }}"
+                       style="background:white; border:1px solid #d8e5d2; color:#173b2f; padding:9px 14px; border-radius:8px; text-decoration:none; font-weight:bold; margin-left:8px;">
+                        👁 הצגת פרטים
+                    </a>
+
+                    <a href="/work-planning/employee/{{ employee.email }}"
+                       style="background:#4f7f4f; color:white; padding:10px 16px; border-radius:8px; text-decoration:none; font-weight:bold;">
+                        ✎ עריכת עובד
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+
+</body>
+</html>

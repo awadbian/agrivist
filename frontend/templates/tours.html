@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="tour-flow">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>סיורים והזמנות</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tour-flow.css') }}">
+</head>
+
+<body>
+    {% include 'line.html' %}
+
+    <header class="tour-hero">
+        {% if session.get("role") == "admin" %}
+        <a class="tour-admin-add-btn" href="{{ url_for('add_tour') }}" aria-label="הוספת סיור חדש">
+            + הוספת סיור
+        </a>
+        {% endif %}
+
+        <div>
+            <h1>סיורים והזמנות</h1>
+            <p>חוו את החווה מקרוב</p>
+        </div>
+    </header>
+
+   <main class="tour-page">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <section class="tour-heading centered">
+            <div>
+                <h2>בחרו את הסיור המתאים לכם</h2>
+                <p>מגוון אפשרויות סיור לכל משפחה וקבוצה</p>
+            </div>
+        </section>
+
+        {% if tour_packages %}
+        <section class="tour-card-grid" aria-label="רשימת סיורים זמינים">
+            {% for tour in tour_packages %}
+            <article class="tour-card">
+
+                {% if tour.image_url %}
+<div class="tour-card-image">
+    <img src="{{ tour.image_url }}" alt="{{ tour.title }}">
+</div>
+{% endif %}
+
+{% if session.get("role") == "admin" %}
+<div class="tour-card-admin-actions">
+    <a href="{{ url_for('edit_tour', package_id=tour.id) }}">✎</a>
+    <form method="POST" action="{{ url_for('delete_tour', package_id=tour.id) }}"
+        onsubmit="return confirm('למחוק את הסיור הזה?');">
+        <button type="submit">🗑</button>
+    </form>
+</div>
+{% endif %}
+
+<div class="tour-card-content">
+    <h3>{{ tour.title }}</h3>
+
+    {% set rating_data = rating_summary.get(tour.title) if rating_summary else None %}
+    <div class="tour-rating-summary">
+        <span class="rating-stars">★★★★★</span>
+        {% if rating_data %}
+        <span class="rating-count">({{ rating_data.average_rating }} ביקורות)</span>
+        {% else %}
+        <span class="rating-count">(0 ביקורות)</span>
+        {% endif %}
+    </div>
+
+    <div class="tour-meta">
+        <span>⏱ {{ tour.duration_label }}</span>
+        <span>👥 עד {{ tour.max_people }} משתתפים</span>
+    </div>
+
+    <p class="tour-description">{{ tour.description }}</p>
+    {% if tour.includes %}
+<div class="includes-title">מה כולל</div>
+
+<ul class="tour-includes">
+    {% for item in tour.includes.splitlines() %}
+        {% if item.strip() %}
+        <li>{{ item.replace('✓', '').replace('✔', '').strip() }}</li>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% endif %}
+
+    <div class="tour-card-footer">
+
+    <div class="tour-price">
+        ₪{{ tour.price }}<span> לאדם</span>
+    </div>
+
+    {% if session.get("role") != "admin" %}
+    <a class="book-btn"
+       href="{{ url_for('tour_calendar', tour_package_id=tour.id) }}">
+       הזמן סיור
+    </a>
+    {% endif %}
+
+</div>
+</div>
+
+            </article>
+            {% endfor %}
+        </section>
+
+        {% else %}
+        <section class="flow-card empty-tours">
+            <h2>אין סיורים זמינים כרגע</h2>
+            <p>כאשר יתווספו סיורים פעילים הם יופיעו כאן.</p>
+        </section>
+        {% endif %}
+
+
+<section class="tour-extra-section">
+
+    <div class="group-contact-box">
+        <div class="group-contact-content">
+            <h3>חוויה חקלאית ייחודית</h3>
+            <p>
+בואו לגלות את עולם הפלפלים מקרוב,
+ליהנות מחוויה חקלאית ייחודית, טעימות מיוחדות וסיורים מודרכים לכל המשפחה.
+</p>
+            
+
+        <div class="group-gallery">
+            <img src="{{ url_for('static', filename='images/gallery1.jpg') }}">
+            <img src="{{ url_for('static', filename='images/gallery2.jpg') }}">
+            <img src="{{ url_for('static', filename='images/gallery3.jpg') }}">
+            <img src="{{ url_for('static', filename='images/gallery4.jpg') }}">
+        </div>
+    </div>
+
+</section>
+
+
+        {% if latest_ratings %}
+<section class="tour-reviews-section">
+    <div class="tour-reviews-header">
+        <h2>מה המבקרים מספרים?</h2>
+        <p>חוויות אמיתיות של מבקרים בחוות הפלפלים</p>
+    </div>
+
+    <div class="tour-reviews-grid">
+        {% for review in latest_ratings %}
+        <article class="tour-review-card">
+            <div class="tour-review-quote">”</div>
+
+            <div class="tour-review-stars">
+                {% for i in range(review.rating) %}
+                <span>★</span>
+                {% endfor %}
+                {% for i in range(5 - review.rating) %}
+                <span class="empty-star">☆</span>
+                {% endfor %}
+            </div>
+
+            <p class="tour-review-comment">
+                {{ review.comment }}
+            </p>
+
+            <div class="tour-review-divider"></div>
+
+            <div class="tour-review-footer">
+                <strong>{{ review.full_name }}</strong>
+                <span>{{ review.tour_type }}</span>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+
+<div class="tour-features">
+        <div class="feature-item">
+            🌱
+            <h4>חוויה אורגנית</h4>
+            <p>גידול טבעי ואיכותי</p>
+        </div>
+
+        <div class="feature-item">
+            👨‍🌾
+            <h4>הדרכה מקצועית</h4>
+            <p>מדריכים מנוסים ומקצועיים</p>
+        </div>
+
+        <div class="feature-item">
+            👥
+            <h4>מתאים לקבוצות</h4>
+            <p>משפחות, חברים וארגונים</p>
+        </div>
+
+        <div class="feature-item">
+            🍅
+            <h4>מוצרים איכותיים</h4>
+            <p>מוצרים מהחווה</p>
+        </div>
+    </div>
+{% endif %}
+
+        <div class="test-hidden">טופס הזמנה</div>
+    </main>
+    
+</body>
+
+</html>

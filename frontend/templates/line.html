@@ -1,0 +1,481 @@
+﻿<div class="site-header">
+    <div class="brand-section">
+        <div class="brand-text">
+            <div class="brand-title">חוות הפלפלים</div>
+            <div class="brand-subtitle">עוטף עזה</div>
+        </div>
+        <div class="brand-icon">⟲</div>
+    </div>
+
+    <nav class="nav-menu">
+    <a href="/" class="{% if request.path == '/' %}active{% endif %}">בית</a>
+    <a href="/about" class="{% if request.path == '/about' %}active{% endif %}">אודות החווה</a>
+    <a href="/pepper-varieties" class="{% if request.path == '/pepper-varieties' %}active{% endif %}">זני פלפלים</a>
+
+    {% if session.get("role") == "admin" %}
+        <a href="/tours" class="{% if request.path.startswith('/tours') %}active{% endif %}">ניהול סיורים</a>
+    {% else %}
+        <a href="/tours" class="{% if request.path.startswith('/tours') %}active{% endif %}">הזמינו סיור</a>
+        {% if session.get("role") == "employee" %}
+    <a href="/worker-tours" class="{% if request.path.startswith('/worker-tours') %}active{% endif %}">ניהול סיורים</a>
+{% endif %}
+    {% endif %}
+
+    {% if session.get("user") %}
+
+        {% if session.get("role") == "admin" %}
+        
+    <a href="/admin-dashboard"
+       class="{% if request.path == '/admin-dashboard' %}active{% endif %}">
+       Admin Dashboard
+    </a>
+
+    <a href="{{ url_for('admin_weekly_schedule') }}"
+       class="{% if request.path.startswith('/admin/weekly-schedule') %}active{% endif %}">
+       סידור עבודה
+    </a>
+
+    <a href="/work-planning"
+       class="{% if request.path.startswith('/work-planning') %}active{% endif %}">
+       נתוני העובדים
+    </a>
+
+    
+{% endif %}
+
+        {% if session.get("role") == "employee" %}
+            <a href="/worker-dashboard" class="{% if request.path == '/worker-dashboard' %}active{% endif %}">
+               דשבורד עובד
+            </a>
+
+            <a href="/employee-schedule" class="{% if request.path == '/employee-schedule' %}active{% endif %}">
+               סטטוס & שעות עובד
+            </a>
+        {% endif %}
+
+        {% if session.get("role") != "admin" and session.get("role") != "employee" %}
+            <a href="/my-booked-tours" class="{% if request.path == '/my-booked-tours' %}active{% endif %}">
+                ההזמנות שלי
+            </a>
+        {% endif %}
+
+ {% if session.get("user_id") and session.get("role") in ["employee", "admin"] %}
+<div class="notification-wrapper">
+    <button class="notification-bell" type="button" onclick="toggleNotificationsMenu()">
+        🔔
+        {% if unread_notifications_count and unread_notifications_count > 0 %}
+            <span class="notification-badge">{{ unread_notifications_count }}</span>
+        {% endif %}
+    </button>
+
+    <div id="notificationsDropdown" class="notifications-dropdown">
+        <div class="notifications-dropdown-header">
+            <button type="button" class="close-notifications" onclick="toggleNotificationsMenu()">×</button>
+
+            <div>
+                <h3>התראות</h3>
+                <p>{{ unread_notifications_count }} התראות חדשות</p>
+            </div>
+        </div>
+
+        <div class="notifications-dropdown-list">
+            {% for notification in header_notifications %}
+            <div class="dropdown-notification {% if not notification.is_read %}unread{% endif %}">
+                <div class="dropdown-notification-icon">
+                    {% if "הזמנה" in notification.title %}
+                        📅
+                    {% elif "עבודה" in notification.title %}
+                        💼
+                    {% else %}
+                        ⭐
+                    {% endif %}
+                </div>
+
+                <div class="dropdown-notification-content">
+                    <strong>{{ notification.title }}</strong>
+                    <p>{{ notification.message }}</p>
+
+                    <small>
+                        {{ notification.created_at.strftime("%Y-%m-%d %H:%M") if notification.created_at else "" }}
+                    </small>
+
+                    {% if not notification.is_read %}
+                    <form method="POST" action="{{ url_for('read_notification', notification_id=notification.id) }}">
+                        <button type="submit" class="mark-read-link">סמן כנקרא</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-notifications">
+                אין התראות להצגה.
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('notifications') }}" class="all-notifications-link">
+            צפה בכל ההתראות
+        </a>
+    </div>
+</div>
+{% endif %}
+
+        <div class="user-menu">
+            <a href="/profile" class="hello-user {% if request.path == '/profile' %}active{% endif %}" dir="ltr">
+                Hello {{ session.get("user") }}
+            </a>
+            <a href="/logout">התנתקות</a>
+        </div>
+
+    {% else %}
+        <a href="/login">התחברות</a>
+    {% endif %}
+</nav>
+</div>
+
+<script>
+function toggleNotificationsMenu() {
+    const dropdown = document.getElementById("notificationsDropdown");
+    if (dropdown) {
+        dropdown.classList.toggle("show");
+    }
+}
+
+document.addEventListener("click", function(event) {
+    const wrapper = document.querySelector(".notification-wrapper");
+    const dropdown = document.getElementById("notificationsDropdown");
+
+    if (wrapper && dropdown && !wrapper.contains(event.target)) {
+        dropdown.classList.remove("show");
+    }
+});
+</script>
+
+
+<style>
+    .site-header {
+        direction: rtl;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #ffffff;
+        border-bottom: 1px solid #e5e5e5;
+        padding: 14px 28px;
+        font-family: Arial, sans-serif;
+        box-sizing: border-box;
+        width: 100%;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .brand-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .brand-text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        line-height: 1.2;
+    }
+
+    .brand-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #2f4f2f;
+    }
+
+    .brand-subtitle {
+        font-size: 13px;
+        color: #8d8d8d;
+        margin-top: 2px;
+    }
+
+    .brand-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background-color: #6f8f60;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        flex-wrap: wrap;
+    }
+
+    .nav-menu a {
+        text-decoration: none;
+        color: #333333;
+        font-size: 16px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        transition: 0.2s ease;
+    }
+
+    .nav-menu a:hover {
+        background-color: #f3f3f3;
+    }
+
+    .nav-menu a.active {
+        background-color: #6f8f60;
+        color: white;
+        font-weight: 700;
+    }
+
+    .hello-user {
+        font-size: 16px;
+        font-weight: 700;
+        color: #2f4f2f;
+        padding: 10px 14px;
+    }
+
+    .nav-menu .signup-btn {
+        border: 1px solid #d7d7d7;
+        background-color: #fafafa;
+        padding: 10px 16px;
+    }
+
+    .nav-menu .signup-btn:hover {
+        background-color: #f1f1f1;
+    }
+
+    @media (max-width: 900px) {
+        .site-header {
+            flex-direction: column;
+            gap: 14px;
+            padding: 16px;
+        }
+
+        .nav-menu {
+            justify-content: center;
+            gap: 10px;
+        }
+    }
+
+    nav {
+        align-items: center;
+    }
+
+    .user-menu {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+    .notification-bell {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    text-decoration: none;
+    color: #173b2b;
+    font-size: 22px;
+    background: transparent;
+}
+
+.notification-bell:hover {
+    background: #eef5ee;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: #dc1745;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.notification-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.notification-bell {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #173b2b;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.notification-bell:hover {
+    background: #eef5ee;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 50%;
+    background: #dc1745;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notifications-dropdown {
+    display: none;
+    position: absolute;
+    top: 52px;
+    left: 0;
+    width: 420px;
+    max-height: 560px;
+    background: white;
+    border: 1px solid #dce8d8;
+    border-radius: 18px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+    z-index: 9999;
+    overflow: hidden;
+    direction: rtl;
+}
+
+.notifications-dropdown.show {
+    display: block;
+}
+
+.notifications-dropdown-header {
+    padding: 22px 24px;
+    border-bottom: 1px solid #e5ebe2;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.notifications-dropdown-header h3 {
+    margin: 0;
+    font-size: 24px;
+    color: #173b2b;
+}
+
+.notifications-dropdown-header p {
+    margin: 7px 0 0;
+    color: #8b9388;
+    font-size: 15px;
+}
+
+.close-notifications {
+    border: none;
+    background: transparent;
+    color: #173b2b;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.notifications-dropdown-list {
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+.dropdown-notification {
+    display: flex;
+    gap: 14px;
+    padding: 18px 22px;
+    border-bottom: 1px solid #edf1ea;
+    background: white;
+}
+
+.dropdown-notification.unread {
+    background: #f8fbf6;
+}
+
+.dropdown-notification.unread::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: #4f7f4d;
+    border-radius: 50%;
+    margin-top: 10px;
+}
+
+.dropdown-notification-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #eef5ee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.dropdown-notification-content {
+    flex: 1;
+}
+
+.dropdown-notification-content strong {
+    color: #173b2b;
+    font-size: 16px;
+}
+
+.dropdown-notification-content p {
+    color: #68766a;
+    margin: 7px 0;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.dropdown-notification-content small {
+    color: #9a9f97;
+    font-size: 13px;
+}
+
+.mark-read-link {
+    border: none;
+    background: transparent;
+    color: #4f7f4d;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 6px 0 0;
+}
+
+.all-notifications-link {
+    display: block;
+    padding: 17px;
+    text-align: center;
+    color: #173b2b;
+    text-decoration: none;
+    font-weight: bold;
+    background: #f7f8f5;
+}
+
+.empty-notifications {
+    padding: 28px;
+    text-align: center;
+    color: #8b9388;
+}
+</style>

@@ -1,0 +1,153 @@
+{% include "line.html" %}
+
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>מערכת שעות עובד</title>
+</head>
+
+<body style="margin:0; font-family:Arial, sans-serif; background:#f7faf5; direction:rtl;">
+
+<section style="padding:40px;">
+
+    <h1 style="color:#173b2f; font-size:42px; margin:0 0 8px;">
+        מערכת שעות אישית
+    </h1>
+
+    <p style="color:#6f776b; font-size:18px; margin:0 0 32px;">
+        המשמרות שלך לשבוע הנוכחי
+    </p>
+
+    {% for employee in employees %}
+    {% set schedule = employee.published_schedule or {"shifts": [], "shift_count": 0, "total_hours": 0} %}
+
+    <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:18px; margin-bottom:26px;">
+
+        <div style="background:white; border:1px solid #d8e5d2; border-radius:16px; padding:24px; display:flex; align-items:center; justify-content:space-between;">
+            <div>
+                <p style="margin:0 0 8px; color:#6f776b;">שם העובד</p>
+                <h2 style="margin:0; color:#173b2f;">{{ employee.name }}</h2>
+            </div>
+            <div style="width:50px; height:50px; border-radius:50%; background:#eef5e8; display:flex; align-items:center; justify-content:center; font-size:24px;">
+                👤
+            </div>
+        </div>
+
+        <div style="background:white; border:1px solid #d8e5d2; border-radius:16px; padding:24px; display:flex; align-items:center; justify-content:space-between;">
+            <div>
+                <p style="margin:0 0 8px; color:#6f776b;">אימייל</p>
+                <h2 style="margin:0; color:#173b2f; font-size:20px; direction:ltr;">{{ employee.email }}</h2>
+            </div>
+            <div style="width:50px; height:50px; border-radius:50%; background:#eef5e8; display:flex; align-items:center; justify-content:center; font-size:24px;">
+                ✉️
+            </div>
+        </div>
+
+        <div style="background:white; border:1px solid #d8e5d2; border-radius:16px; padding:24px; display:flex; align-items:center; justify-content:space-between;">
+            <div>
+                <p style="margin:0 0 8px; color:#6f776b;">טווח שבוע העבודה</p>
+                <h2 style="margin:0; color:#173b2f; font-size:22px;">
+                    {% if week_start_date and week_end_date %}
+                    {{ week_start_date.strftime("%d/%m/%Y") }} - {{ week_end_date.strftime("%d/%m/%Y") }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </h2>
+            </div>
+            <div style="width:50px; height:50px; border-radius:50%; background:#eef5e8; display:flex; align-items:center; justify-content:center; font-size:24px;">
+                📅
+            </div>
+        </div>
+
+        <div style="background:white; border:1px solid #d8e5d2; border-radius:16px; padding:24px; display:flex; align-items:center; justify-content:space-between;">
+            <div>
+                <p style="margin:0 0 8px; color:#6f776b;">מספר משמרות השבוע</p>
+                <h2 style="margin:0; color:#173b2f; font-size:30px;">{{ schedule.shift_count }}</h2>
+                <span style="display:none;"><strong>מספר משמרות השבוע:</strong> {{ schedule.shift_count }}</span>
+            </div>
+            <div style="width:50px; height:50px; border-radius:50%; background:#eef5e8; display:flex; align-items:center; justify-content:center; font-size:24px;">
+                🗓️
+            </div>
+        </div>
+
+        <div style="background:white; border:1px solid #d8e5d2; border-radius:16px; padding:24px; display:flex; align-items:center; justify-content:space-between;">
+            <div>
+                <p style="margin:0 0 8px; color:#6f776b;">סך שעות מתוכננות</p>
+                <h2 style="margin:0; color:#173b2f; font-size:30px;">{{ schedule.total_hours }}</h2>
+            </div>
+            <div style="width:50px; height:50px; border-radius:50%; background:#eef5e8; display:flex; align-items:center; justify-content:center; font-size:24px;">
+                🕒
+            </div>
+        </div>
+
+    </div>
+
+    <div style="background:white; border:1px solid #d8e5d2; border-radius:16px; padding:28px; margin-bottom:30px;">
+        <h2 style="color:#173b2f; font-size:28px; margin:0 0 22px;">
+            🗓 טבלת משמרות אישית
+        </h2>
+
+        {% if not schedule.shifts %}
+        <p style="padding:18px; border-radius:12px; background:#f4f1ed; color:#555; text-align:center;">
+            אין לך משמרות משובצות לשבוע זה.
+        </p>
+        {% else %}
+        <table style="width:100%; border-collapse:collapse; margin-top:22px; overflow:hidden; border-radius:14px;">
+            <tr style="background:#4f7f4f; color:white;">
+                <th style="padding:15px;">יום</th>
+                <th style="padding:15px;">תאריך</th>
+                <th style="padding:15px;">שעת התחלה</th>
+                <th style="padding:15px;">שעת סיום</th>
+                <th style="padding:15px;">סוג משמרת</th>
+            </tr>
+
+            {% for shift in schedule.shifts %}
+            <tr style="text-align:center; background:#ffffff;">
+                <td style="padding:15px; border-bottom:1px solid #d8e5d2; font-weight:bold; color:#173b2f;">{{ shift.day }}</td>
+
+                <td style="padding:15px; border-bottom:1px solid #d8e5d2;">
+                    {% if shift.date %}{{ shift.date.strftime("%d/%m/%Y") }}{% else %}-{% endif %}
+                </td>
+
+                <td style="padding:15px; border-bottom:1px solid #d8e5d2;">{{ shift.start or "-" }}</td>
+                <td style="padding:15px; border-bottom:1px solid #d8e5d2;">{{ shift.end or "-" }}</td>
+
+                <td style="padding:15px; border-bottom:1px solid #d8e5d2;">
+                    <span style="background:#4f7f4f; color:white; padding:7px 14px; border-radius:8px; font-size:13px; font-weight:bold;">
+                        {{ shift.shift_type or "-" }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+
+    {% endfor %}
+
+    <div style="display:flex; gap:14px; margin-top:32px;">
+        <a href="/weekly-shift-calendar"
+           style="background:#4f7f4f; color:white; padding:13px 24px; border-radius:10px; text-decoration:none; font-weight:bold;">
+            📅 לוח שבועי
+        </a>
+
+        <a href="/shift-status"
+           style="background:white; border:1px solid #d8e5d2; color:#173b2f; padding:13px 24px; border-radius:10px; text-decoration:none; font-weight:bold;">
+            🕒 סטטוס משמרת
+        </a>
+    </div>
+
+</section>
+
+<script>
+    document.querySelectorAll("a[href]").forEach((link) => {
+        link.addEventListener("click", () => {
+            link.classList.add("is-loading");
+            link.setAttribute("aria-disabled", "true");
+        });
+    });
+</script>
+
+</body>
+</html>

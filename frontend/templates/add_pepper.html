@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="add-pepper">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ form_title|default('הוספת זן פלפל חדש', true) }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add-pepper.css') }}">
+</head>
+
+<body>
+    {% include 'line.html' %}
+
+    <!-- באנר עליון של עמוד הוספת זן פלפל. -->
+    <section class="admin-pepper-hero" style="--hero-image: url('{{ url_for('static', filename='images/pepper-hero.jpg') }}');">
+        <div class="admin-pepper-hero__overlay">
+            <h1>{{ form_title|default('הוספת זן פלפל חדש', true) }}</h1>
+            <p>{{ form_subtitle|default('ניהול זני פלפלים במערכת חוות הפלפלים', true) }}</p>
+        </div>
+    </section>
+
+    <!-- תוכן העמוד המרכזי: הודעות מערכת וטופס הוספה. -->
+    <main class="admin-pepper-page" dir="rtl">
+        <!-- הצגת הודעות הצלחה/שגיאה שנשלחות מה-backend באמצעות flash. -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-list">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <!-- הצגת שגיאת database כללית אם שמירת הפלפל נכשלה. -->
+        {% if errors.database %}
+            <div class="flash-list">
+                <div class="flash error">{{ errors.database }}</div>
+            </div>
+        {% endif %}
+
+        <!-- טופס הוספת פלפל. שמות השדות חייבים להישאר תואמים ל-backend. -->
+        <form class="pepper-form-card" method="POST" action="{{ form_action|default(url_for('add_pepper'), true) }}" enctype="multipart/form-data">
+            <!-- סקשן פרטים בסיסיים: שם, שם מדעי וצבע. -->
+            <section class="pepper-form-section">
+                <h2>פרטים בסיסיים</h2>
+                <div class="pepper-form-grid">
+                    <!-- שדה שם הפלפל: נשלח ל-backend בשם name. -->
+                    <div class="form-field">
+                        <label for="name">שם הפלפל</label>
+                        <input id="name" name="name" value="{{ form_data.name }}" placeholder="לדוגמה: חלפיניו" required>
+                        {% if errors.name %}<div class="field-error">{{ errors.name }}</div>{% endif %}
+                    </div>
+
+                    <!-- שדה שם מדעי: נשלח ל-backend בשם scientific_name. -->
+                    <div class="form-field">
+                        <label for="scientific_name">שם מדעי</label>
+                        <input id="scientific_name" name="scientific_name" value="{{ form_data.scientific_name }}" placeholder="Capsicum annuum" required>
+                        {% if errors.scientific_name %}<div class="field-error">{{ errors.scientific_name }}</div>{% endif %}
+                    </div>
+
+                    <!-- שדה צבע הפלפל: נשלח ל-backend בשם color. -->
+                    <div class="form-field">
+                        <label for="color">צבע</label>
+                        <input id="color" name="color" value="{{ form_data.color }}" placeholder="ירוק, אדום, כתום" required>
+                        {% if errors.color %}<div class="field-error">{{ errors.color }}</div>{% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- סקשן מקור וחריפות: המדינה וערך הסקוביל המספרי. -->
+            <section class="pepper-form-section">
+                <h2>רמת חריפות ומקור</h2>
+                <div class="pepper-form-grid">
+                    <!-- שדה מדינת מקור: נשלח ל-backend בשם origin_country. -->
+                    <div class="form-field">
+                        <label for="origin_country">מדינת מקור</label>
+                        <input id="origin_country" name="origin_country" value="{{ form_data.origin_country }}" placeholder="מקסיקו" required>
+                        {% if errors.origin_country %}<div class="field-error">{{ errors.origin_country }}</div>{% endif %}
+                    </div>
+
+                    <!-- שדה מספרי לרמת חריפות יציבה 0-5 שנשמרת עם הפלפל. -->
+                    <div class="form-field">
+                        <label for="heat_level_value">רמת חריפות מספרית</label>
+                        <input id="heat_level_value" name="heat_level_value" type="number" min="0" max="5" step="1"
+                            value="{{ form_data.heat_level_value }}" placeholder="הכניסו מספר מ-0 עד 5" required>
+                        <small class="field-help">0 = ללא חריפות, 5 = חריפות קיצונית</small>
+                        {% if errors.heat_level_value %}<div class="field-error">{{ errors.heat_level_value }}</div>{% endif %}
+                        <input id="scoville_level" name="scoville_level" type="hidden" value="{{ form_data.scoville_level }}">
+                    </div>
+                </div>
+            </section>
+
+            <!-- סקשן תמונה ותיאור: מידע שמוצג בכרטיס הפלפל. -->
+            <!-- סקשן תמונה ותיאור: מידע שמוצג בכרטיס הפלפל. -->
+<section class="pepper-form-section">
+    <h2>תמונה ותיאור</h2>
+    <div class="pepper-form-grid">
+        <!-- שדה העלאת תמונה מהמחשב -->
+        <div class="form-field form-field--full">
+            <label for="image_file">תמונה</label>
+            <input id="image_file" name="image_file" type="file" accept="image/*">
+            {% if form_data.image_url %}
+                <small class="field-help">תמונה נוכחית: {{ form_data.image_url }}</small>
+                <input type="hidden" name="existing_image_url" value="{{ form_data.image_url }}">
+            {% endif %}
+        </div>
+
+        <!-- שדה תיאור קצר: חובה ונשלח בשם description. -->
+        <div class="form-field form-field--full">
+            <label for="description">תיאור קצר</label>
+            <textarea id="description" name="description" placeholder="תיאור קצר שיופיע בכרטיס הפלפל" required>{{ form_data.description }}</textarea>
+            {% if errors.description %}<div class="field-error">{{ errors.description }}</div>{% endif %}
+        </div>
+    </div>
+</section>
+
+            <!-- סקשן מידע חקלאי נוסף: כרגע כולל טיפים לגידול. -->
+            <section class="pepper-form-section">
+    <h2>מידע חקלאי לחקלאי</h2>
+    <div class="pepper-form-grid">
+        <div class="form-field form-field--full">
+            <label for="growing_tips">טיפים לגידול</label>
+            <textarea id="growing_tips" name="growing_tips" placeholder="שמש, השקיה, אדמה וטמפרטורה">{{ form_data.growing_tips }}</textarea>
+        </div>
+
+        <div class="form-field">
+            <label for="soil_type">סוג אדמה</label>
+            <input id="soil_type" name="soil_type" value="{{ form_data.soil_type }}" placeholder="אדמה מנוקזת היטב">
+        </div>
+
+        <div class="form-field">
+            <label for="sunlight_needs">צרכי שמש</label>
+            <input id="sunlight_needs" name="sunlight_needs" value="{{ form_data.sunlight_needs }}" placeholder="שמש מלאה">
+        </div>
+
+        <div class="form-field">
+            <label for="temperature_range">טמפרטורה מתאימה</label>
+            <input id="temperature_range" name="temperature_range" value="{{ form_data.temperature_range }}" placeholder="24-30°C">
+        </div>
+
+        <div class="form-field">
+            <label for="season">עונת שתילה</label>
+            <input id="season" name="season" value="{{ form_data.season }}" placeholder="אביב / קיץ">
+        </div>
+    </div>
+</section>
+
+<section class="pepper-form-section">
+    <h2>מערכת השקיה</h2>
+    <div class="pepper-form-grid">
+        <div class="form-field">
+            <label for="watering_needs">צרכי השקיה</label>
+            <input id="watering_needs" name="watering_needs" value="{{ form_data.watering_needs }}" placeholder="בינונית">
+        </div>
+
+        <div class="form-field">
+            <label for="irrigation_frequency">תדירות השקיה</label>
+            <input id="irrigation_frequency" name="irrigation_frequency" value="{{ form_data.irrigation_frequency }}" placeholder="3 פעמים בשבוע">
+        </div>
+
+        <div class="form-field">
+            <label for="water_amount">כמות מים</label>
+            <input id="water_amount" name="water_amount" value="{{ form_data.water_amount }}" placeholder="2 ליטר לצמח">
+        </div>
+    </div>
+</section>
+
+<section class="pepper-form-section">
+    <h2>מידע קטיף</h2>
+    <div class="pepper-form-grid">
+        <div class="form-field">
+            <label for="harvest_season">עונת קטיף</label>
+            <input id="harvest_season" name="harvest_season" value="{{ form_data.harvest_season }}" placeholder="קיץ">
+        </div>
+
+        <div class="form-field">
+            <label for="days_to_harvest">ימים עד קטיף</label>
+            <input id="days_to_harvest" name="days_to_harvest" type="number" min="0" value="{{ form_data.days_to_harvest }}" placeholder="80">
+        </div>
+
+        <div class="form-field form-field--full">
+            <label for="harvest_signs">סימני מוכנות לקטיף</label>
+            <textarea id="harvest_signs" name="harvest_signs" placeholder="צבע מלא, מרקם קשיח וברק טבעי">{{ form_data.harvest_signs }}</textarea>
+        </div>
+
+        <div class="form-field form-field--full">
+            <label for="storage_tips">הנחיות אחסון לאחר קטיף</label>
+            <textarea id="storage_tips" name="storage_tips" placeholder="לשמור במקום קריר ויבש">{{ form_data.storage_tips }}</textarea>
+        </div>
+
+        <div class="form-field form-field--full">
+            <label for="warnings">אזהרות לחקלאי</label>
+            <textarea id="warnings" name="warnings" placeholder="להימנע מעודף מים או חשיפה לקור">{{ form_data.warnings }}</textarea>
+        </div>
+    </div>
+</section>
+
+            <!-- כפתורי פעולה: שמירה שולחת את הטופס, ביטול חוזר לרשימת הפלפלים. -->
+            <div class="form-actions">
+                <!-- כפתור שמירה: מבצע submit ל-route add_pepper. -->
+                <button class="btn-primary" type="submit">{{ submit_label|default('שמירת פלפל', true) }}</button>
+                <!-- כפתור ביטול: לא שולח את הטופס, רק חוזר לעמוד pepper_varieties. -->
+                <a class="btn-secondary" href="{{ url_for('pepper_varieties') }}">ביטול</a>
+            </div>
+        </form>
+    </main>
+    <script src="{{ url_for('static', filename='js/add-pepper.js') }}"></script>
+</body>
+
+</html>

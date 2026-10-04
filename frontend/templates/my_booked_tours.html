@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Booked Tours</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f7f4ee;
+            color: #1f3327;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .page h1 {
+            text-align: center;
+            color: #2f4f2f;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 35px;
+        }
+
+        .messages {
+            max-width: 700px;
+            margin: 0 auto 25px;
+        }
+
+        .message {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .message.success {
+            background-color: #d8f3dc;
+            color: #1b7f3a;
+        }
+
+        .message.danger,
+        .message.warning {
+            background-color: #ffe5e5;
+            color: #b83232;
+        }
+
+        .bookings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 18px;
+            padding: 26px;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+            border-top: 6px solid #6f8f60;
+        }
+
+        .booking-card h2 {
+            margin-top: 0;
+            color: #2f4f2f;
+        }
+
+        .booking-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+
+        .booking-row strong {
+            color: #333;
+        }
+
+        .status-paid {
+            color: #1b7f3a;
+            font-weight: bold;
+        }
+
+        .status-active {
+            color: #2f4f2f;
+            font-weight: bold;
+        }
+
+        .status-cancelled {
+            color: #b83232;
+            font-weight: bold;
+        }
+
+        .booking-actions {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .cancel-btn {
+            background-color: #b83232;
+            color: white;
+            border: none;
+            padding: 11px 22px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cancel-btn:hover {
+            background-color: #922626;
+        }
+
+        .cancelled-text {
+            color: #b83232;
+            font-weight: bold;
+        }
+
+        .not-allowed-text {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .empty-box {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 18px;
+            padding: 35px;
+            text-align: center;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+        }
+
+        .back-link {
+            display: block;
+            width: fit-content;
+            margin: 35px auto 0;
+            background: #6f8f60;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            background: #5c774f;
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include 'line.html' %}
+
+    <main class="page">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="messages">
+                    {% for category, message in messages %}
+                        <div class="message {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <h1>ההזמנות שלי</h1>
+        <p class="page-subtitle">כאן מוצגות כל ההזמנות ששילמת עליהן</p>
+
+        {% if bookings %}
+            <section class="bookings-grid">
+                {% for booking in bookings %}
+                    <div class="booking-card">
+
+                        <h2>{{ booking.tour_type }}</h2>
+
+                        <div class="booking-row">
+                            <strong>תאריך:</strong>
+                            <span>{{ booking.preferred_date }}</span>
+                        </div>
+
+                        <div class="booking-row">
+                            <strong>שעה:</strong>
+                            <span>{{ booking.preferred_time }}</span>
+                        </div>
+
+                        <div class="booking-row">
+                            <strong>מספר משתתפים:</strong>
+                            <span>{{ booking.participants }}</span>
+                        </div>
+
+                        <div class="booking-row">
+                            <strong>סטטוס תשלום:</strong>
+                            <span class="status-paid">{{ booking.payment_status }}</span>
+                        </div>
+
+                        <div class="booking-row">
+                            <strong>סטטוס הזמנה:</strong>
+
+                            {% if booking.status == "Cancelled" %}
+                                <span class="status-cancelled">{{ booking.status }}</span>
+                            {% else %}
+                                <span class="status-active">{{ booking.status }}</span>
+                            {% endif %}
+                        </div>
+
+                        {% if booking.notes %}
+                            <div class="booking-row">
+                                <strong>הערות:</strong>
+                                <span>{{ booking.notes }}</span>
+                            </div>
+                        {% endif %}
+
+                        <div class="booking-actions">
+                            {% if booking.can_cancel %}
+                                <form method="POST"
+                                      action="{{ url_for('cancel_my_booked_tour', booking_id=booking.id) }}"
+                                      onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                    <button type="submit" class="cancel-btn">
+                                        Cancel Booking
+                                    </button>
+                                </form>
+                            {% else %}
+                                {% if booking.status == "Cancelled" %}
+                                    <p class="cancelled-text">This booking has already been cancelled.</p>
+                                {% else %}
+                                    <p class="not-allowed-text">
+                                        Cancellation is allowed only up to 2 days before the tour.
+                                    </p>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </section>
+        {% else %}
+            <div class="empty-box">
+                <h2>אין עדיין הזמנות ששולמו</h2>
+                <p>לא נמצאו סיורים מוזמנים ומשולמים עבור המשתמש שלך.</p>
+            </div>
+        {% endif %}
+
+        <a class="back-link" href="{{ url_for('home') }}">חזרה לדף הבית</a>
+
+    </main>
+
+</body>
+</html>

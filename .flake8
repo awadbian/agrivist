@@ -1,0 +1,11 @@
+[flake8]
+max-line-length = 120
+jobs = 1
+exclude =
+    .git,
+    .venv,
+    __pycache__,
+    .pytest_cache
+per-file-ignores =
+    backend/main.py:E402
+    backend/data_access/init_db.py:E402

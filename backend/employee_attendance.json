@@ -1,0 +1,10 @@
+{
+    "sara.cohen@gmail.com": {
+        "is_on_duty": true,
+        "start_shift": "12:46",
+        "end_shift": null,
+        "worked_hours": 0,
+        "daily_salary": 0,
+        "history": []
+    }
+}

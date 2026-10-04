@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>ההתראות שלי</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            direction: rtl;
+            background: #f7f8f5;
+            color: #173b2b;
+        }
+
+        .notifications-page {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 0 24px;
+        }
+
+        .notifications-header {
+            margin-bottom: 24px;
+        }
+
+        .notifications-header h1 {
+            margin: 0;
+            font-size: 34px;
+        }
+
+        .notifications-header p {
+            color: #8b9388;
+            margin-top: 8px;
+        }
+
+        .notification-card {
+            background: white;
+            border: 1px solid #dce8d8;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .notification-card.unread {
+            border-right: 6px solid #4f7f4d;
+        }
+
+        .notification-title {
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .notification-message {
+            color: #68766a;
+            line-height: 1.7;
+        }
+
+        .notification-date {
+            color: #8b9388;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .read-btn {
+            border: none;
+            background: #4f7f4d;
+            color: white;
+            border-radius: 9px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .empty-message {
+            background: white;
+            border: 1px solid #dce8d8;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            color: #8b9388;
+        }
+    </style>
+</head>
+
+<body>
+    {% include "line.html" %}
+
+    <main class="notifications-page">
+        <div class="notifications-header">
+            <h1>ההתראות שלי 🔔</h1>
+            <p>עדכונים חשובים מהמערכת</p>
+        </div>
+
+        {% for notification in notifications %}
+        <div class="notification-card {% if not notification.is_read %}unread{% endif %}">
+            <div>
+                <div class="notification-title">{{ notification.title }}</div>
+                <div class="notification-message">{{ notification.message }}</div>
+
+                <div class="notification-date">
+                    {{ notification.created_at.strftime("%Y-%m-%d %H:%M") if notification.created_at else "" }}
+                </div>
+            </div>
+
+            {% if not notification.is_read %}
+            <form method="POST" action="{{ url_for('read_notification', notification_id=notification.id) }}">
+                <button type="submit" class="read-btn">סמן כנקרא</button>
+            </form>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="empty-message">
+            אין התראות להצגה.
+        </div>
+        {% endfor %}
+    </main>
+</body>
+</html>

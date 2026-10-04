@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>דירוג הסיור</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f5f1;
+            color: #263b2b;
+        }
+
+        .review-page {
+            max-width: 760px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .review-card {
+            background: white;
+            border: 1px solid #d9e4d6;
+            border-radius: 18px;
+            padding: 32px;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+        }
+
+        .review-title {
+            text-align: center;
+            font-size: 34px;
+            margin-bottom: 8px;
+            color: #274b33;
+        }
+
+        .review-subtitle {
+            text-align: center;
+            color: #7f856d;
+            margin-bottom: 30px;
+        }
+
+        .tour-info {
+            background: #f3f6f0;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 28px;
+            color: #48614d;
+        }
+
+        .rating-section {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .stars {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .stars input {
+            display: none;
+        }
+
+        .stars label {
+            font-size: 42px;
+            color: #d7d7d7;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .stars input:checked ~ label,
+        .stars label:hover,
+        .stars label:hover ~ label {
+            color: #f5b942;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 130px;
+            border: 1px solid #d9e4d6;
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 16px;
+            resize: vertical;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: #4c8054;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #3f6d47;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 18px;
+            color: #4c8054;
+            text-decoration: none;
+        }
+
+        .flash {
+            margin-bottom: 18px;
+            padding: 12px;
+            border-radius: 10px;
+            background: #fff3cd;
+            color: #6b5200;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'line.html' %}
+
+    <main class="review-page">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <section class="review-card">
+            <h1 class="review-title">איך היה הסיור?</h1>
+            <p class="review-subtitle">נשמח לשמוע על החוויה שלך ולעזור למבקרים הבאים</p>
+
+            <div class="tour-info">
+                <strong>הסיור שלך:</strong>
+                {{ booking.tour_type }}
+                <br>
+                <strong>תאריך:</strong>
+                {{ booking.preferred_date }}
+                |
+                <strong>שעה:</strong>
+                {{ booking.preferred_time }}
+            </div>
+
+            <form method="POST">
+                <div class="rating-section">
+                    <h2>דרג את הסיור שלנו</h2>
+                    <p>בחר דירוג מ־1 עד 5 כוכבים</p>
+
+                    <div class="stars">
+                        <input type="radio" id="star5" name="rating" value="5">
+                        <label for="star5">★</label>
+
+                        <input type="radio" id="star4" name="rating" value="4">
+                        <label for="star4">★</label>
+
+                        <input type="radio" id="star3" name="rating" value="3">
+                        <label for="star3">★</label>
+
+                        <input type="radio" id="star2" name="rating" value="2">
+                        <label for="star2">★</label>
+
+                        <input type="radio" id="star1" name="rating" value="1">
+                        <label for="star1">★</label>
+                    </div>
+                </div>
+
+                <label for="comment"><strong>תגובה / הערה</strong></label>
+                <textarea id="comment" name="comment"
+                    placeholder="כתבי כאן איך הייתה החוויה שלך..."></textarea>
+
+                <button class="submit-btn" type="submit">שליחת ביקורת</button>
+            </form>
+
+            <a class="back-link" href="{{ url_for('home') }}">חזרה לדף הבית</a>
+        </section>
+    </main>
+</body>
+
+</html>

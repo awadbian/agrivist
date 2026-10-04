@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="pepper-varieties">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>זני פלפלים</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pepper-varieties.css') }}">
+</head>
+
+<body>
+    {% include 'line.html' %}
+
+    <section class="hero" style="--hero-image: url('{{ url_for('static', filename='images/pepper-hero.jpg') }}');">
+        <div class="hero-content">
+            <h1>זני הפלפלים שלנו</h1>
+            <p>מעל 50 זנים מכל רחבי העולם</p>
+        </div>
+    </section>
+<div class="toolbar-inner">
+
+    <label class="search-box">
+        <span>🔍</span>
+        <input id="pepperSearch"
+               type="search"
+               placeholder="חיפוש זן או מקור...">
+    </label>
+
+    <form id="heatFilterForm"
+          class="heat-filter-form"
+          method="GET"
+          action="{{ url_for('pepper_varieties') }}">
+
+        <button class="all-peppers-link {% if not selected_heat_levels %}active{% endif %}"
+                type="submit">
+            הכל
+        </button>
+
+        {% for level in heat_levels %}
+    {% if level is mapping %}
+        {% set heat_value = level.level_value %}
+        {% set icons_count = level.level_value|int %}
+    {% else %}
+        {% set heat_value = level %}
+        {% set icons_count = loop.index %}
+    {% endif %}
+
+    {% if heat_value|string != "0" %}
+    <label class="heat-icon-filter">
+        <input type="checkbox"
+               name="heat_level"
+               value="{{ heat_value }}"
+               {% if selected_heat_levels is string and heat_value|string == selected_heat_levels|string %}checked{% endif %}
+               {% if selected_heat_levels is not string and heat_value|string in selected_heat_levels %}checked{% endif %}>
+        {% for i in range(icons_count) %}♨{% endfor %}
+    </label>
+    {% endif %}
+{% endfor %}
+
+    </form>
+
+</div>
+
+    </div>
+
+    <main class="content-shell">
+
+        {% if session.get("role") == "admin" %}
+        <div class="page-admin-actions">
+            <a class="page-add-pepper-btn" href="{{ url_for('add_pepper') }}">
+    ➕ הוסף פלפל חדש
+</a>
+        </div>
+        {% endif %}
+
+        <p class="results-copy">
+            {% if selected_heat_levels %}
+            מוצגים {{ peppers|length }} פלפלים עבור {{ selected_heat_levels|length }} רמות חריפות שנבחרו
+            {% else %}
+            מוצגים {{ peppers|length }} פלפלים זמינים
+            {% endif %}
+        </p>
+
+        {% if peppers %}
+        <section class="pepper-grid" id="pepperGrid">
+            {% for pepper in peppers %}
+            <article class="pepper-card"
+                     data-search="{{ pepper.name }} {{ pepper.origin_country|default('', true) }} {{ pepper.color|default('', true) }} {{ pepper.scoville_level }} {{ pepper.heat_level_name|default('', true) }}">
+
+                <button class="image-open" type="button" aria-label="פתח פרטים על {{ pepper.name }}">
+                    {% if pepper.image_url %}
+                    <img src="{{ pepper.image_url if pepper.image_url.startswith('http') else url_for('static', filename=pepper.image_url.replace('/static/', '')) }}" alt="{{ pepper.name }}">
+                    {% else %}
+                    <div class="pepper-image-placeholder">{{ pepper.name }}</div>
+                    {% endif %}
+
+                    <span class="heat-badge {{ pepper.heat_level_css_class|default('', true) }}">
+                        {{ pepper.heat_level_name|default(pepper.heat_category|default(pepper.scoville_level, true), true) }}
+                    </span>
+                </button>
+
+                <div class="card-body">
+                    {% if session.get("role") == "admin" %}
+                    <div class="card-admin-actions">
+                        <a class="card-admin-btn card-admin-btn--edit"
+                           href="{{ url_for('edit_pepper', pepper_id=pepper.id) }}">
+                            ✏️ עריכה
+                        </a>
+
+                        <a class="card-admin-btn card-admin-btn--add-info"
+                           href="{{ url_for('edit_pepper', pepper_id=pepper.id) }}">
+                            🌱 מידע
+                        </a>
+
+                        <form method="POST"
+                              action="{{ url_for('delete_admin_pepper', pepper_id=pepper.id) }}"
+                              onsubmit="return confirm('למחוק את זן הפלפל הזה?');">
+                            <button class="card-admin-btn card-admin-btn--delete" type="submit">
+                                🗑️ מחיקה
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+
+                    <h2 class="pepper-title">{{ pepper.name }}</h2>
+                    <p class="scientific-name">{{ pepper.scientific_name|default('Capsicum', true) }}</p>
+
+                    <div class="meta-list">
+                        <div class="meta-row">
+                            <span class="meta-label">מקור</span>
+                            <span class="meta-value">{{ pepper.origin_country|default('לא צוין', true) }}</span>
+                        </div>
+
+                        <div class="meta-row">
+                            <span class="meta-label">סקוביל</span>
+                            <span class="meta-value">SHU {{ pepper.scoville_level }}</span>
+                        </div>
+
+                        <div class="meta-row">
+                            <span class="meta-label">צבע</span>
+                            <span class="meta-value color-mark">
+                                <span class="color-dot"></span>
+                                {{ pepper.color|default('לא צוין', true) }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <p class="description">{{ pepper.description }}</p>
+
+                    {% if session.get("role") == "employee" %}
+<button class="farmer-info-btn" type="button">
+    🌱 מידע לחקלאי
+</button>
+
+<div class="tip-box farmer-info-box" hidden>
+    <p class="tip-title">מידע לחקלאי</p>
+    <p class="tip-text"><strong>טיפים לגידול:</strong> {{ pepper.growing_tips|default('לא עודכן', true) }}</p>
+    <p class="tip-text"><strong>סוג אדמה:</strong> {{ pepper.soil_type|default('לא עודכן', true) }}</p>
+    <p class="tip-text"><strong>צרכי שמש:</strong> {{ pepper.sunlight_needs|default('לא עודכן', true) }}</p>
+    <p class="tip-text"><strong>השקיה:</strong> {{ pepper.irrigation_frequency|default('לא עודכן', true) }}</p>
+    <p class="tip-text"><strong>קטיף:</strong> {{ pepper.harvest_season|default('לא עודכן', true) }}</p>
+</div>
+{% endif %}
+                    <div class="details-data" hidden>
+                        <span class="detail-name">{{ pepper.name }}</span>
+                        <span class="detail-scientific">{{ pepper.scientific_name|default('Capsicum', true) }}</span>
+                        <span class="detail-origin">{{ pepper.origin_country|default('לא צוין', true) }}</span>
+                        <span class="detail-description">{{ pepper.description }}</span>
+                        <span class="detail-extra">{{ pepper.extra_info|default('אין מידע נוסף כרגע.', true) }}</span>
+                        <span class="detail-tips">{{ pepper.growing_tips|default('אין טיפים נוספים כרגע.', true) }}</span>
+                        <span class="detail-status">{{ pepper.status|default('', true) }}</span>
+                        <span class="detail-spray">{{ pepper.spray_info|default('', true) }}</span>
+                        <span class="detail-watering">{{ pepper.watering_needs|default('', true) }}</span>
+                        <span class="detail-sunlight">{{ pepper.sunlight_needs|default('', true) }}</span>
+                        <span class="detail-season">{{ pepper.season|default('', true) }}</span>
+                        <span class="detail-warnings">{{ pepper.warnings|default('', true) }}</span>
+                        <span class="detail-soil">{{ pepper.soil_type|default('', true) }}</span>
+                        <span class="detail-temperature">{{ pepper.temperature_range|default('', true) }}</span>
+                        <span class="detail-irrigation-frequency">{{ pepper.irrigation_frequency|default('', true) }}</span>
+                        <span class="detail-water-amount">{{ pepper.water_amount|default('', true) }}</span>
+                        <span class="detail-harvest-season">{{ pepper.harvest_season|default('', true) }}</span>
+                        <span class="detail-days-to-harvest">{{ pepper.days_to_harvest|default('', true) }}</span>
+                        <span class="detail-harvest-signs">{{ pepper.harvest_signs|default('', true) }}</span>
+                        <span class="detail-storage-tips">{{ pepper.storage_tips|default('', true) }}</span>
+                        <span class="detail-image">{{ pepper.image_url|default('', true) }}</span>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </section>
+        {% else %}
+        <section class="empty-state">
+            <div class="empty-icon">🌶️</div>
+            <h2>אין זני פלפלים להצגה כרגע</h2>
+            <p>כאשר המנהל יוסיף פלפלים חדשים, הם יופיעו כאן.</p>
+
+            {% if session.get("role") == "admin" %}
+            <a href="{{ url_for('add_pepper') }}" class="empty-state__action">
+                ➕ הוסף פלפל ראשון
+            </a>
+            {% endif %}
+        </section>
+        {% endif %}
+    </main>
+
+    <div class="modal-backdrop" id="pepperModal" aria-hidden="true">
+        <section class="flash-card" role="dialog" aria-modal="true">
+            <img id="modalImage" alt="">
+
+            <div class="flash-card-body">
+                <button class="modal-close" type="button" id="modalClose">×</button>
+
+                <h2 id="modalTitle"></h2>
+                <p class="scientific-name" id="modalScientific"></p>
+                <p class="origin" id="modalOrigin"></p>
+                <p id="modalDescription"></p>
+                <p id="modalExtra"></p>
+
+                <div class="detail-list" id="modalDetailList"></div>
+
+                <div class="tip-box">
+                    <p class="tip-title">טיפים לגידול</p>
+                    <p class="tip-text" id="modalTips"></p>
+                </div>
+            </div>
+        </section>
+        
+    </div>
+<section class="scoville-scale-section">
+    <div class="scoville-container">
+
+        <h2>מדד סקוביל (Scoville Scale)</h2>
+
+        <p class="scoville-description">
+            מדד סקוביל מודד את רמת החריפות של פלפלים על בסיס ריכוז הקפסאיצין.
+            המדד נע מ-0 (פלפל מתוק) ועד למעלה מ-2 מיליון בפלפלים חריפים במיוחד.
+        </p>
+
+        <div class="scoville-levels">
+
+            <div class="scoville-item">
+                <span class="heat-icon mild">♨</span>
+                <h4>מתון</h4>
+                <small>0-1K</small>
+            </div>
+
+            <div class="scoville-item">
+                <span class="heat-icon">♨♨</span>
+                <h4>חם</h4>
+                <small>1K-10K</small>
+            </div>
+
+            <div class="scoville-item">
+                <span class="heat-icon">♨♨♨</span>
+                <h4>בינוני</h4>
+                <small>10K-100K</small>
+            </div>
+
+            <div class="scoville-item">
+                <span class="heat-icon">♨♨♨♨</span>
+                <h4>חריף</h4>
+                <small>100K-500K</small>
+            </div>
+
+            <div class="scoville-item">
+                <span class="heat-icon extreme">♨♨♨♨♨</span>
+                <h4>אקסטרים</h4>
+                <small>500K+</small>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+    <script src="{{ url_for('static', filename='js/pepper-varieties.js') }}"></script>
+    <script>
+document.querySelectorAll(".heat-icon-filter input").forEach(cb => {
+    cb.addEventListener("change", function () {
+        document.getElementById("heatFilterForm").submit();
+    });
+});
+
+document.getElementById("pepperSearch").addEventListener("input", function () {
+
+    const value = this.value.toLowerCase();
+
+    document.querySelectorAll(".pepper-card").forEach(card => {
+
+        const text = card.innerText.toLowerCase();
+
+        if (text.includes(value)) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+});
+</script>
+<script>
+document.querySelectorAll(".farmer-info-btn").forEach(function (button) {
+    button.addEventListener("click", function () {
+        const box = button.nextElementSibling;
+
+        if (!box) {
+            return;
+        }
+
+        box.hidden = !box.hidden;
+
+        if (box.hidden) {
+            button.textContent = "🌱 מידע לחקלאי";
+        } else {
+            button.textContent = "➖ הסתר מידע לחקלאי";
+        }
+    });
+});
+</script>
+</body>
+</html>

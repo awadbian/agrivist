@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="tour-flow">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בחירת שעה ומשתתפים - {{ tour_package.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tour-flow.css') }}">
+</head>
+
+<body>
+    {% include 'line.html' %}
+
+    <main class="tour-step-page">
+        <section class="step-header">
+            <h1>{{ tour_package.title }}</h1>
+            <p>משך הסיור: {{ tour_package.duration_label }}</p>
+            <div class="step-indicator" aria-label="התקדמות ההזמנה">
+                <span class="done">✓</span>
+                <span class="active">2</span>
+                <span>3</span>
+                <span>4</span>
+            </div>
+        </section>
+
+        <form class="flow-card time-card" method="POST" data-time-form data-price="{{ tour_package.price }}">
+            <section class="time-section">
+                <h2>בחרו שעה</h2>
+                <p class="card-subtitle">בחרו שעה מועדפת לסיור</p>
+                <div class="time-grid" role="group" aria-label="שעות זמינות">
+                    {% for slot in slots %}
+                    <label class="time-option {% if selected_time == slot %}selected{% endif %}">
+                        <input type="radio" name="selected_time" value="{{ slot }}" {% if selected_time == slot %}checked{% endif %}>
+                        <span>{{ slot }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                {% if errors.selected_time %}
+                <p class="flow-error">{{ errors.selected_time }}</p>
+                {% endif %}
+            </section>
+
+            <section class="participants-section">
+                <label for="participants">מספר משתתפים</label>
+                <input id="participants" name="participants" type="number" min="1" max="{{ tour_package.max_people }}"
+                    value="{{ participants }}" placeholder="עד {{ tour_package.max_people }} משתתפים">
+                {% if errors.participants %}
+                <p class="flow-error">{{ errors.participants }}</p>
+                {% endif %}
+            </section>
+
+            <section class="booking-summary" data-booking-summary hidden>
+                <p><span>שעה נבחרה:</span><strong data-summary-time></strong></p>
+                <p><span>מחיר כולל:</span><strong data-summary-total></strong></p>
+            </section>
+
+            <div class="flow-actions">
+                <a class="flow-secondary-btn" href="{{ url_for('tour_calendar', tour_package_id=tour_package.id) }}">חזרה</a>
+                <button class="flow-primary-btn" type="submit">המשך</button>
+            </div>
+        </form>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/tour-time.js') }}"></script>
+</body>
+
+</html>

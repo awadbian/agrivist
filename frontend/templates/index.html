@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="he">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חוות הפלפלים</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            direction: rtl;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .logo {
+            color: #2e7d32;
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+        /* HERO */
+        .hero {
+            height: 90vh;
+            background-image: url('https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=1400&q=80');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            transition: transform 0.6s ease;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .login-btn {
+            background-color: white;
+            border: 1px solid #333;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        .signup-btn {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        /* אפקט hover */
+        .hero:hover {
+            transform: scale(1.05);
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+        }
+
+        .hero-content {
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 50px;
+        }
+
+        .hero p {
+            font-size: 22px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            margin: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn-green {
+            background: #2e7d32;
+            color: white;
+        }
+
+        .btn-outline {
+            border: 2px solid white;
+            color: white;
+        }
+
+        /* WHY SECTION */
+        .why-section {
+            background: #f7f5f1;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .why-section h2 {
+            margin: 0;
+            font-size: 56px;
+            color: #274b33;
+            font-weight: 700;
+        }
+
+        .why-subtitle {
+            margin-top: 16px;
+            margin-bottom: 55px;
+            font-size: 18px;
+            color: #7f856d;
+        }
+
+        .why-cards {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .why-card {
+            width: 250px;
+            min-height: 210px;
+            background: #faf9f7;
+            border: 1px solid #d7ddd3;
+            border-radius: 18px;
+            padding: 28px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        }
+
+        .icon-circle {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .icon-circle.green {
+            background: #e8efe8;
+            color: #4c8054;
+        }
+
+        .icon-circle.beige {
+            background: #f3e7d9;
+            color: #d2a164;
+        }
+
+        .icon-circle.pink {
+            background: #f6e7e2;
+            color: #d16943;
+        }
+
+        .why-card h3 {
+            margin: 0 0 18px 0;
+            font-size: 20px;
+            color: #24362b;
+        }
+
+        .why-card p {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+            color: #7d7d68;
+        }
+
+        /* GALLERY */
+
+        .gallery {
+            padding: 70px 40px;
+            background: #f6f3ee;
+            text-align: center;
+        }
+
+        .gallery h2 {
+            font-size: 52px;
+            color: #2f4f3a;
+            margin-bottom: 10px;
+        }
+
+        .gallery p {
+            font-size: 18px;
+            color: #7a7a5c;
+            margin-bottom: 40px;
+        }
+
+        .gallery-grid {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .gallery-card {
+            position: relative;
+            width: 400px;
+            height: 420px;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        /* אפקט מעבר עם העכבר */
+        .gallery-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .gallery-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.08));
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding: 25px;
+        }
+
+        .gallery-overlay h3 {
+            color: white;
+            font-size: 22px;
+            margin: 0;
+        }
+
+
+        /* CTA */
+        .cta-section {
+            background: #4f844d;
+            color: white;
+            text-align: center;
+            padding: 70px 20px;
+        }
+
+        .cta-section h2 {
+            margin: 0 0 18px;
+            font-size: 54px;
+            font-weight: 700;
+        }
+
+        .cta-section p {
+            margin: 0 0 30px;
+            font-size: 18px;
+            color: #f0f0e8;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: #d8a46f;
+            color: #24362b;
+            text-decoration: none;
+            padding: 14px 34px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .cta-btn:hover {
+            background: #c8925f;
+        }
+
+        .site-footer {
+            background: #f3f1ed;
+            border-top: 1px solid #d8d3ca;
+            padding: 45px 40px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        .footer-col h3,
+        .footer-col h4 {
+            color: #24362b;
+            margin-bottom: 18px;
+        }
+
+        .footer-col p,
+        .footer-col li,
+        .footer-col a {
+            color: #6d7666;
+            font-size: 18px;
+            line-height: 1.9;
+            text-decoration: none;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-col a:hover {
+            color: #4f844d;
+        }
+
+        .review-alert {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 26px 34px;
+    border: 1px solid #cfe0cf;
+    border-radius: 18px;
+    background: #fbfaf7;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.review-alert-close {
+    position: absolute;
+    top: 14px;
+    left: 18px;
+    border: none;
+    background: transparent;
+    font-size: 28px;
+    color: #6d7b6d;
+    cursor: pointer;
+}
+
+.review-alert-icon {
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    background: #ff9800;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    box-shadow: 0 12px 22px rgba(255, 152, 0, 0.25);
+}
+
+.review-alert-content {
+    flex: 1;
+}
+
+.review-alert-content h2 {
+    margin: 0 0 8px;
+    color: #274b33;
+    font-size: 30px;
+}
+
+.review-alert-content p {
+    margin: 0;
+    color: #6e776c;
+    font-size: 17px;
+}
+
+.review-alert-btn {
+    background: #b96748;
+    color: white;
+    padding: 13px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.review-alert-btn:hover {
+    background: #a8583d;
+}
+
+
+@media (max-width: 900px) {
+    .home-reviews-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-reviews-section {
+        padding: 55px 20px;
+    }
+}
+
+.work-with-us-section {
+    background: #f7f4ee;
+    padding: 35px 20px 15px;
+    direction: rtl;
+}
+
+.work-with-us-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fffdf8;
+    border: 1px solid #d6ded0;
+    border-radius: 14px;
+    box-shadow: 0 5px 16px rgba(0,0,0,0.12);
+    padding: 22px 35px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+}
+
+.work-content {
+    text-align: center;
+    flex: 1;
+}
+
+.work-content h2 {
+    color: #2f5d3a;
+    font-size: 34px;
+    margin-bottom: 12px;
+    font-weight: 800;
+}
+
+.work-content p {
+    color: #444;
+    font-size: 16px;
+    line-height: 1.8;
+    margin: 0 auto 18px;
+    max-width: 560px;
+}
+
+.work-btn {
+    display: inline-block;
+    background: #2f7d4b;
+    color: white;
+    text-decoration: none;
+    padding: 12px 34px;
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+.work-image {
+    font-size: 70px;
+    width: 120px;
+    text-align: center;
+}
+.website-feedback-section {
+    background: #f7f5f1;
+    padding: 80px 40px;
+    text-align: center;
+    direction: rtl;
+}
+
+.website-feedback-header h2 {
+    margin: 0 0 12px;
+    font-size: 42px;
+    color: #274b33;
+}
+
+.website-feedback-header p {
+    margin: 0 0 18px;
+    color: #7f856d;
+    font-size: 18px;
+}
+
+.website-feedback-average {
+    margin: 18px 0 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.website-feedback-average strong {
+    font-size: 28px;
+    color: #274b33;
+}
+
+.website-feedback-average span {
+    color: #f5b400;
+    font-size: 30px;
+    letter-spacing: 4px;
+}
+
+.website-feedback-average small {
+    color: #7f856d;
+    font-size: 15px;
+}
+
+.website-feedback-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 13px 28px;
+    border-radius: 999px;
+    background: #4c8054;
+    color: white;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.website-feedback-grid {
+    max-width: 1250px;
+    margin: 45px auto 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(260px, 1fr));
+    gap: 26px;
+}
+
+.website-feedback-card {
+    background: #ffffff;
+    border: 1px solid #dfe7dc;
+    border-radius: 16px;
+    padding: 30px 34px;
+    min-height: 250px;
+    box-sizing: border-box;
+    text-align: right;
+}
+
+.website-feedback-quote {
+    color: #d9e3d8;
+    font-size: 58px;
+    font-weight: 900;
+    line-height: 0.8;
+    margin-bottom: 12px;
+}
+
+.website-feedback-stars {
+    color: #f5b400;
+    font-size: 23px;
+    letter-spacing: 3px;
+    margin-bottom: 22px;
+    direction: ltr;
+    text-align: right;
+}
+
+.website-feedback-stars .empty-star {
+    color: #8c9a8d;
+}
+
+.website-feedback-comment {
+    font-size: 18px;
+    line-height: 1.9;
+    color: #24352a;
+    min-height: 92px;
+    margin: 0;
+}
+
+.website-feedback-divider {
+    height: 1px;
+    background: #edf0e9;
+    margin: 24px 0 18px;
+}
+
+.website-feedback-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.website-feedback-footer strong {
+    font-size: 18px;
+    color: #263b2b;
+}
+
+.website-feedback-footer span {
+    font-size: 14px;
+    color: #7a8277;
+}
+
+@media (max-width: 900px) {
+    .website-feedback-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .website-feedback-section {
+        padding: 55px 20px;
+    }
+}
+.faq-section-new {
+    background: #F5F7F2;
+    padding: 60px 80px;
+    direction: rtl;
+}
+
+.faq-new-header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.faq-new-header h2 {
+    font-size: 42px;
+    font-weight: bold;
+    color: #274b33;
+    margin-bottom: 10px;
+}
+
+.faq-new-header p {
+    font-size: 17px;
+    color: #7f856d;
+}
+
+.faq-new-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #dde8d0;
+    border-radius: 16px;
+    padding: 52px 64px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px 48px;
+}
+
+.faq-new-card {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.faq-new-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: #edf4e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+}
+
+.faq-new-q {
+    font-size: 17px;
+    font-weight: bold;
+    color: #2e4a1e;
+    margin: 0 0 7px;
+    line-height: 1.4;
+}
+
+.faq-new-a {
+    font-size: 14px;
+    color: #7a8c6a;
+    margin: 0;
+    line-height: 1.7;
+}
+    </style>
+</head>
+
+<body>
+    {% include 'line.html' %}
+
+    {% if pending_review %}
+<section class="review-alert">
+    <button class="review-alert-close" type="button">×</button>
+
+    <div class="review-alert-icon">★</div>
+
+    <div class="review-alert-content">
+        <h2>איך היה הסיור?</h2>
+        <p>
+            ביקרת בסיור {{ pending_review.tour_type }}.
+            נשמח לשמוע על החוויה שלך!
+        </p>
+    </div>
+
+    <a class="review-alert-btn" href="{{ url_for('post_tour_review') }}">
+        ☆ דרגי את הסיור
+    </a>
+</section>
+{% endif %}
+    <!-- NAVBAR -->
+
+
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>ברוכים הבאים לחוות הפלפלים</h1>
+            <p>מרכז מבקרים ייחודי המתמחה בגידול זני פלפלים חריפים</p>
+
+            <a href="{{ url_for('tours') }}" class="btn btn-green">הזמינו סיור</a>
+            <a href="{{ url_for('pepper_varieties') }}" class="btn btn-outline">גלו את הזנים שלנו</a>
+        </div>
+    </div>
+
+    <!-- WHY -->
+    <div class="why-section">
+        <h2>למה לבקר אצלנו?</h2>
+        <p class="why-subtitle">חוויה חקלאית ייחודית המשלבת חקלאות מסורתית עם טכנולוגיה מתקדמת</p>
+
+        <div class="why-cards">
+            <div class="why-card">
+                <div class="icon-circle green">♡</div>
+                <h3>חוויה משפחתית</h3>
+                <p>פעילויות מותאמות לכל המשפחה, מילדים ועד מבוגרים</p>
+            </div>
+
+            <div class="why-card">
+                <div class="icon-circle beige">☼</div>
+                <h3>חקלאות מתקדמת</h3>
+                <p>שילוב של שיטות גידול מסורתיות וטכנולוגיות חדשניות</p>
+            </div>
+
+            <div class="why-card">
+                <div class="icon-circle pink">👥</div>
+                <h3>סיורים מודרכים</h3>
+                <p>סיורים מקצועיים עם מדריכים מומחים בתחום החקלאות</p>
+            </div>
+
+            <div class="why-card">
+                <div class="icon-circle green">🍃</div>
+                <h3>מגוון זנים ייחודי</h3>
+                <p>למעלה מ־50 זני פלפלים חריפים מכל רחבי העולם</p>
+            </div>
+        </div>
+    </div>
+    <!-- GALLERY -->
+    <div class="gallery">
+        <h2>גלריית הפלפלים שלנו</h2>
+        <p>צבעים, צורות וטעמים מכל העולם</p>
+
+        <div class="gallery-grid">
+            <div class="gallery-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdroQQNpkNkat5v1iWndw9dXzcjlrY00TAEA&s"
+                    alt="פלפלים אקזוטיים">
+                <div class="gallery-overlay">
+                    <h3>זנים אקזוטיים</h3>
+                </div>
+            </div>
+
+            <div class="gallery-card">
+                <img src="https://res.cloudinary.com/midrag/image/upload/c_scale,w_1400,q_auto,f_auto/Cms/ikfbmnwqmu3uwah2zdin.jpg"
+                    alt="גידול בחממות">
+                <div class="gallery-overlay">
+                    <h3>גידול בחממות</h3>
+                </div>
+            </div>
+
+            <div class="gallery-card">
+                <img src="https://sigalbremer.co.il/wp-content/uploads/2016/10/%D7%A1%D7%9C%D7%98-%D7%A4%D7%9C%D7%A4%D7%9C%D7%99%D7%9D-3-%D7%A6%D7%91%D7%A2%D7%99%D7%9D-4.jpg"
+                    alt="זנים צבעוניים">
+                <div class="gallery-overlay">
+                    <h3>זנים צבעוניים</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WORK WITH US SECTION -->
+<section class="work-with-us-section">
+    <div class="work-with-us-container">
+
+        <div class="work-image">
+            🌱
+        </div>
+
+        <div class="work-content">
+            <h2>רוצים לעבוד איתנו?</h2>
+            <p>
+                הצטרפו לצוות חוות הפלפלים ותהיו חלק מחוויה חקלאית ייחודית.
+                אנו מחפשים אנשים אחראים, בעלי מוטיבציה ואהבה לעבודה בצוות.
+            </p>
+
+            <a href="/job-application" class="work-btn">
+                הגישו מועמדות
+            </a>
+        </div>
+
+        <div class="work-image">
+            🫑
+        </div>
+
+    </div>
+</section>
+  
+
+<section class="website-feedback-section">
+    <div class="website-feedback-header">
+        <h2>מה אומרים המבקרים שלנו</h2>
+        <p>חוות דעת אמיתיות ממבקרים שביקרו אצלנו</p>
+
+        {% if website_feedback_summary.feedback_count > 0 %}
+        <div class="website-feedback-average">
+            <strong>{{ website_feedback_summary.average_rating }}</strong>
+            <span>★★★★★</span>
+            <small>מבוסס על {{ website_feedback_summary.feedback_count }} ביקורות</small>
+        </div>
+        {% endif %}
+
+        {% if session.get("user") %}
+        <a class="website-feedback-btn" href="{{ url_for('website_feedback') }}">
+            ספרו לנו מה דעתכם על האתר
+        </a>
+        {% endif %}
+    </div>
+
+
+    {% if website_feedback %}
+    <div class="website-feedback-grid">
+        {% for feedback in website_feedback %}
+        <article class="website-feedback-card">
+            <div class="website-feedback-quote">”</div>
+
+            <div class="website-feedback-stars">
+                {% for i in range(feedback.rating) %}
+                <span>★</span>
+                {% endfor %}
+                {% for i in range(5 - feedback.rating) %}
+                <span class="empty-star">☆</span>
+                {% endfor %}
+            </div>
+
+            <p class="website-feedback-comment">
+                {{ feedback.comment }}
+            </p>
+
+            <div class="website-feedback-divider"></div>
+
+            <div class="website-feedback-footer">
+                <strong>{{ feedback.full_name }}</strong>
+                <span>משוב על האתר</span>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% endif %}
+</section>
+
+<!-- FAQ SECTION -->
+<section class="faq-section-new">
+  <div class="faq-new-header">
+    <h2>שאלות נפוצות</h2>
+    <p>תשובות לשאלות הנפוצות ביותר על החווה</p>
+  </div>
+  <div class="faq-new-grid">
+    <div class="faq-new-card">
+      <div class="faq-new-icon">🕐</div>
+      <div>
+        <p class="faq-new-q">מהן שעות הפעילות של החווה?</p>
+        <p class="faq-new-a">ימים א׳–ה׳ 09:00–17:00, יום ו׳ עד 14:00. שבת סגור.</p>
+      </div>
+    </div>
+    <div class="faq-new-card">
+      <div class="faq-new-icon">👨‍👩‍👧</div>
+      <div>
+        <p class="faq-new-q">האם הסיורים מתאימים לילדים?</p>
+        <p class="faq-new-a">בהחלט! מתאימים לכל הגילאים ומומלצים למשפחות.</p>
+      </div>
+    </div>
+    <div class="faq-new-card">
+      <div class="faq-new-icon">📅</div>
+      <div>
+        <p class="faq-new-q">האם צריך להזמין מקום מראש?</p>
+        <p class="faq-new-a">מומלץ מאוד להזמין מראש, במיוחד בסופי שבוע.</p>
+      </div>
+    </div>
+    <div class="faq-new-card">
+      <div class="faq-new-icon">💳</div>
+      <div>
+        <p class="faq-new-q">מה אמצעי התשלום?</p>
+        <p class="faq-new-a">ניתן לשלם במזומן, אשראי וביט. אין עמלות נוספות.</p>
+      </div>
+    </div>
+    <div class="faq-new-card">
+      <div class="faq-new-icon">🌶️</div>
+      <div>
+        <p class="faq-new-q">האם הפלפלים חריפים מאוד?</p>
+        <p class="faq-new-a">יש מגוון רחב — מעדינים ועד חריפים מאוד. יש לכל אחד!</p>
+      </div>
+    </div>
+    <div class="faq-new-card">
+      <div class="faq-new-icon">🛍️</div>
+      <div>
+        <p class="faq-new-q">האם ניתן לקנות מוצרים בחווה?</p>
+        <p class="faq-new-a">כן! פלפלים טריים, זרעים, שתילים ומוצרים ייחודיים.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- CTA -->
+    <!-- CTA SECTION -->
+    <section class="cta-section">
+        <h2>מוכנים לחוויה בלתי נשכחת?</h2>
+        <p>הצטרפו אלינו לסיור מודרך בחווה וגלו את עולם הפלפלים החריפים</p>
+        <a href="{{ url_for('tours') }}" class="cta-btn">הזמינו סיור עכשיו← </a>
+    </section>
+
+
+
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>חוות הפלפלים - עוטף עזה</h3>
+                <p>מרכז מבקרים חקלאי ייחודי המתמחה בגידול זני פלפלים חריפים מכל רחבי העולם</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>קישורים מהירים</h4>
+                <ul>
+                    <li><a href="/about">אודות החווה</a></li>
+                    <li><a href="/pepper-varieties">זני פלפלים</a></li>
+                    <li><a href="/tours">הזמנת סיורים</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>פרטי התקשרות</h4>
+                <p>עוטף עזה, ישראל</p>
+            </div>ּ
+        </div>
+    </footer>
+
+<script>
+</script>
+</body>
+
+</html>

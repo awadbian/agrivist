@@ -1,0 +1,99 @@
+{% include "line.html" %}
+
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>פרטי עובד</title>
+</head>
+<body style="margin:0; font-family:Arial, sans-serif; background:#f4f7f1; direction:rtl;">
+
+<section style="padding:40px;">
+    <h1 style="color:#2f4f2f;">פרטי עובד ושעות עבודה</h1>
+
+    <div style="background:white; padding:28px; border-radius:24px; box-shadow:0 8px 24px rgba(0,0,0,0.08); margin-top:25px;">
+        <h2 style="color:#6f8f60;">{{ employee.name }}</h2>
+        <p dir="ltr" style="text-align:right;">{{ employee.email }}</p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:20px; margin-top:25px;">
+            <div style="background:#eef5e8; padding:20px; border-radius:18px;">
+                <h3 style="color:#2f4f2f;">שכר לשעה</h3>
+                <h2>{{ employee.hourly_rate }} ₪</h2>
+            </div>
+
+            <div style="background:#eef5e8; padding:20px; border-radius:18px;">
+                <h3 style="color:#2f4f2f;">מספר משמרות</h3>
+                <h2>{{ employee.shifts|length }}</h2>
+            </div>
+
+            <div style="background:#eef5e8; padding:20px; border-radius:18px;">
+                <h3 style="color:#2f4f2f;">סטטוס</h3>
+                <h2>{{ employee.status }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div style="background:white; padding:28px; border-radius:24px; box-shadow:0 8px 24px rgba(0,0,0,0.08); margin-top:30px;">
+        <h2 style="color:#2f4f2f;">מערכת שעות</h2>
+<form method="POST" action="/work-planning/employee/{{ employee.email }}/update">
+    <div style="background:#eef5e8; padding:20px; border-radius:18px; margin-bottom:25px;">
+    <label style="font-weight:bold; color:#2f4f2f;">שכר לשעה:</label>
+    <input type="number"
+           name="hourly_rate"
+           value="{{ employee.hourly_rate }}"
+           min="0"
+           step="1"
+           style="padding:10px; border-radius:10px; border:1px solid #ccc; margin-right:10px;">
+    <span>₪</span>
+</div>
+    <table style="width:100%; border-collapse:collapse; margin-top:20px;">
+        <tr style="background:#6f8f60; color:white;">
+            <th style="padding:14px;">יום</th>
+            <th style="padding:14px;">תחילת עבודה</th>
+            <th style="padding:14px;">סיום עבודה</th>
+            <th style="padding:14px;">הפסקה</th>
+        </tr>
+
+        {% for shift in employee.shifts %}
+        <tr style="text-align:center; background:#fafafa;">
+            <td style="padding:14px; border-bottom:1px solid #ddd;">
+                {{ shift.day }}
+                <input type="hidden" name="day_{{ loop.index0 }}" value="{{ shift.day }}">
+            </td>
+
+            <td style="padding:14px; border-bottom:1px solid #ddd;">
+                <input type="time" name="start_{{ loop.index0 }}" value="{{ shift.start }}" style="padding:8px; border-radius:8px; border:1px solid #ccc;">
+            </td>
+
+            <td style="padding:14px; border-bottom:1px solid #ddd;">
+                <input type="time" name="end_{{ loop.index0 }}" value="{{ shift.end }}" style="padding:8px; border-radius:8px; border:1px solid #ccc;">
+            </td>
+
+            <td style="padding:14px; border-bottom:1px solid #ddd;">
+                <input type="text" name="break_{{ loop.index0 }}" value="{{ shift.break_time }}" style="padding:8px; border-radius:8px; border:1px solid #ccc;">
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <input type="hidden" name="shift_count" value="{{ employee.shifts|length }}">
+
+    <div style="margin-top:25px;">
+        <a href="/work-planning"
+           style="background:#2f4f2f; color:white; padding:12px 20px; border-radius:12px; text-decoration:none; font-weight:bold;">
+            חזרה לרשימת עובדים
+        </a>
+
+        <button type="submit"
+                style="background:#6f8f60; color:white; padding:12px 20px; border:none; border-radius:12px; font-weight:bold; margin-right:10px; cursor:pointer;">
+            עדכון 
+        </button>
+    </div>
+    
+</form>
+
+    </div>
+</section>
+
+</body>
+</html>

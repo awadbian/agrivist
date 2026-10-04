@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הגשת אילוצים</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/worker-dashboard.css') }}">
+</head>
+<body>
+    {% include "line.html" %}
+
+    <main class="worker-dashboard constraints-layout">
+        <header class="constraints-header">
+            <h1>הגשת אילוצים</h1>
+            <p>בחר/י את הזמינות שלך לשבוע שנפתח על ידי המנהל. המנהל יוכל להתחשב באילוצים בעת בניית סידור העבודה.</p>
+            {% if week_start_date %}
+            <p class="constraints-week-label">
+                הגשת אילוצים לשבוע:
+                {{ week_start_date.strftime("%d/%m/%Y") }}
+                {% if week_end_date %} - {{ week_end_date.strftime("%d/%m/%Y") }}{% endif %}
+            </p>
+            {% endif %}
+        </header>
+
+        <section class="constraints-page constraints-page--form">
+            {% if error %}
+            <p class="constraints-alert constraints-alert--error">{{ error }}</p>
+            {% endif %}
+
+            {% if success_message %}
+            <p class="constraints-alert constraints-alert--success">{{ success_message }}</p>
+            {% endif %}
+
+            {% if submission %}
+            <section class="submitted-summary" aria-label="סיכום האילוצים שנשמרו">
+                <div class="submitted-summary-header">
+                    <div>
+                        <h2>האילוצים שנשמרו</h2>
+                        {% if week_start_date %}
+                        <p>
+                            לשבוע:
+                            {{ week_start_date.strftime("%d/%m/%Y") }}
+                            {% if week_end_date %} - {{ week_end_date.strftime("%d/%m/%Y") }}{% endif %}
+                        </p>
+                        {% else %}
+                        <p>לשבוע הבא</p>
+                        {% endif %}
+                    </div>
+                    <span class="submitted-summary-status">נשלח למנהל</span>
+                </div>
+
+                <p class="submitted-summary-message">
+                    האילוצים שלך לשבוע הבא כבר נשמרו. ניתן לערוך ולעדכן אותם כל עוד המנהל לא סגר את אפשרות העדכון.
+                </p>
+
+                <dl class="submitted-summary-list">
+                    {% for day_value, day_label in days %}
+                    {% set saved_value = submission[day_value] %}
+                    <div class="submitted-summary-row">
+                        <dt>{{ day_label }}</dt>
+                        <dd>{{ option_labels.get(saved_value, saved_value) }}</dd>
+                    </div>
+                    {% endfor %}
+                </dl>
+
+                {% if submission.notes %}
+                <div class="submitted-summary-notes">
+                    <h3>הערות שנשמרו</h3>
+                    <p>{{ submission.notes }}</p>
+                </div>
+                {% endif %}
+            </section>
+            {% endif %}
+
+            {% if submission and constraints_updates_open and not is_editing %}
+            <div class="constraints-actions constraints-actions--submitted">
+                <a class="schedule-info-btn secondary-action" href="{{ url_for('worker_dashboard') }}">חזרה לדשבורד עובד</a>
+                <a class="schedule-info-btn constraints-submit-btn" href="{{ url_for('worker_constraints', edit='1') }}">עריכת אילוצים</a>
+            </div>
+            {% elif submission and not constraints_updates_open %}
+            <div class="constraints-actions constraints-actions--submitted">
+                <a class="schedule-info-btn secondary-action" href="{{ url_for('worker_dashboard') }}">חזרה לדשבורד עובד</a>
+            </div>
+            {% endif %}
+
+            {% if constraints_updates_open and (not submission or is_editing or error) %}
+            <form class="constraints-form" method="post" action="{{ url_for('worker_constraints') }}">
+                {% if submission %}
+                <input type="hidden" name="is_editing" value="1">
+                {% endif %}
+                <p class="constraints-form-notice">יש לבחור אפשרות אחת לכל יום עבודה, ולסמן לפחות 4 ימים שבהם ניתן לעבוד.</p>
+
+                <div class="availability-list" aria-label="בחירת זמינות לשבוע הבא">
+                    {% for day_value, day_label in days %}
+                    {% set selected_value = form_data.get("availability_" ~ day_value) or (submission[day_value] if submission else "") %}
+                    <fieldset class="day-availability-row">
+                        <legend>{{ day_label }}</legend>
+
+                        {% if day_value in closed_days %}
+                        <p class="constraints-form-notice">{{ closed_day_message }}</p>
+                        {% else %}
+                        <div class="availability-options">
+                            {% for option_value, option_label in options_by_day.get(day_value, options) %}
+                            <label class="availability-option{% if option_value == 'unavailable' %} availability-option--unavailable{% endif %}">
+                                <input
+                                    type="radio"
+                                    name="availability_{{ day_value }}"
+                                    value="{{ option_value }}"
+                                    {% if selected_value == option_value %}checked{% endif %}
+                                    required
+                                >
+                                <span>{{ option_label }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </fieldset>
+                    {% endfor %}
+                </div>
+
+                <label class="constraints-notes-label" for="constraints_notes">הערות נוספות</label>
+                <textarea
+                    id="constraints_notes"
+                    name="constraints_notes"
+                    class="constraints-notes"
+                    rows="4"
+                    placeholder="לדוגמה: מעדיף/ה לא לעבוד אחרי 18:00 ביום שלישי"
+                >{{ form_data.get("constraints_notes") or (submission.notes if submission else "") }}</textarea>
+
+                <div class="constraints-actions">
+                    <a class="schedule-info-btn secondary-action" href="{{ url_for('worker_dashboard') }}">חזרה לדשבורד עובד</a>
+                    <button class="schedule-info-btn constraints-submit-btn" type="submit" data-loading-text="שומר...">
+                        {% if submission %}עדכון אילוצים{% else %}שליחת אילוצים{% endif %}
+                    </button>
+                </div>
+            </form>
+            {% endif %}
+        </section>
+
+        <p class="constraints-info-note">
+            המנהל יראה את הבקשות האחרונות שלך ויתחשב בהן בעת בניית הסידור. שים/י לב שאילוצים אינם ערובה לשינוי סידור.
+        </p>
+    </main>
+    <script>
+        document.querySelectorAll("form").forEach((form) => {
+            form.addEventListener("submit", (event) => {
+                if (form.dataset.submitting === "1") {
+                    event.preventDefault();
+                    return;
+                }
+
+                form.dataset.submitting = "1";
+                form.querySelectorAll("button").forEach((button) => {
+                    button.textContent = button.dataset.loadingText || "מעבד...";
+                    button["dis" + "abled"] = true;
+                    button.classList.add("is-loading");
+                });
+            });
+        });
+
+        document.querySelectorAll("a[href]").forEach((link) => {
+            link.addEventListener("click", () => {
+                link.classList.add("is-loading");
+                link.setAttribute("aria-busy", "true");
+            });
+        });
+    </script>
+</body>
+</html>

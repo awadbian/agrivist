@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דשבורד עובד</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/worker-dashboard.css') }}">
+</head>
+<body>
+    {% include "line.html" %}
+
+    <main class="worker-dashboard">
+        <section class="dashboard-hero">
+            <div class="dashboard-hero-content">
+                <div>
+                    <p class="dashboard-kicker">דשבורד עובד</p>
+                    <h1>שלום, {{ worker_name }}!</h1>
+                    <p class="dashboard-intro">
+                        כאן ניתן לראות את סידור העבודה השבועי, פרטי סיורים, פרטי עבודה, שעות חודשיות והגשת אילוצים לשבוע הבא.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="summary-grid" aria-label="סיכום שבועי">
+            <article class="summary-card">
+                <div class="summary-icon">שע</div>
+                <div>
+                    <h2>המשמרת הבאה</h2>
+                    <p>{{ next_shift }}</p>
+                </div>
+            </article>
+
+            <article class="summary-card">
+                <div class="summary-icon">לו</div>
+                <div>
+                    <h2>מספר משמרות השבוע</h2>
+                    <p>{{ weekly_shift_count }} משמרות</p>
+                </div>
+            </article>
+
+            <article class="summary-card">
+                <div class="summary-icon">שב</div>
+                <div>
+                    <h2>סה״כ שעות השבוע</h2>
+                    <p>{{ weekly_hours }} שעות</p>
+                </div>
+            </article>
+
+            <article class="summary-card">
+                <div class="summary-icon">חו</div>
+                <div>
+                    <h2>סה״כ שעות החודש</h2>
+                    <p>{{ monthly_hours }} שעות</p>
+                </div>
+            </article>
+        </section>
+
+        <section class="schedule-section">
+            <div class="section-heading">
+                <div>
+                    <h2>סידור עבודה שבועי <span class="sr-only">Weekly Work Schedule</span></h2>
+                    <p>
+                        {% if weekly_schedule_start and weekly_schedule_end %}
+                        {{ weekly_schedule_start.strftime("%d/%m/%Y") }} - {{ weekly_schedule_end.strftime("%d/%m/%Y") }}
+                        {% endif %}
+                    </p>
+                </div>
+                <a class="schedule-info-btn" href="/employee-schedule">מידע</a>
+            </div>
+
+            <div class="schedule-table-wrap">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>יום</th>
+                            <th>תאריך</th>
+                            <th>שעת התחלה</th>
+                            <th>שעת סיום</th>
+                            <th>סוג משמרת</th>
+                            <th>עובד/ת</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in published_weekly_schedule_rows %}
+                        <tr>
+                            <td>{{ row.day }}</td>
+                            <td>{% if row.date %}{{ row.date.strftime("%d/%m/%Y") }}{% else %}-{% endif %}</td>
+                            <td>{{ row.start or "-" }}</td>
+                            <td>{{ row.end or "-" }}</td>
+                            <td><span class="shift-badge shift-agriculture">{{ row.shift_type or "-" }}</span></td>
+                            <td>{{ row.employee_name or "-" }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td class="empty-schedule" colspan="6">אין כרגע סידור עבודה שבועי מפורסם.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="actions-grid" aria-label="פעולות מהירות">
+            <article class="action-card">
+                <h2>פרטי סיורים</h2>
+                <p>צפייה בסיורים ששובצת אליהם השבוע.</p>
+                <a class="action-btn action-blue" href="/worker-tours">צפייה בסיורים</a>
+            </article>
+
+            <article class="action-card">
+                <h2>פרטי עבודה</h2>
+                <p>צפייה במשימות, אזורי עבודה והערות מנהל.</p>
+                <a class="action-btn action-green" href="/employee-schedule">צפייה בפרטי עבודה</a>
+            </article>
+
+            <article class="action-card">
+                <h2>הגשת אילוצים</h2>
+                <p>שליחת זמינות ואילוצים לשבוע הבא למנהל.</p>
+                <a class="action-btn action-orange" href="{{ url_for('worker_constraints') }}">הגשת אילוצים</a>
+            </article>
+
+            <article class="action-card">
+                <h2>סטטוס משמרת</h2>
+                <p>צפייה בשעת התחלה, שעת סיום וסטטוס נוכחי.</p>
+                <a class="action-btn action-purple" href="/shift-status">מעבר לסטטוס</a>
+            </article>
+
+            <article class="action-card">
+    <h2>מפת החווה</h2>
+    <p>צפייה במפת החווה והאזורים השונים.</p>
+    <a class="action-btn action-blue" href="{{ url_for('farm_map') }}">צפייה במפה</a>
+</article>
+        </section>
+    </main>
+    <script>
+        document.querySelectorAll("a[href]").forEach((link) => {
+            link.addEventListener("click", () => {
+                link.classList.add("is-loading");
+                link.setAttribute("aria-disabled", "true");
+            });
+        });
+    </script>
+</body>
+</html>

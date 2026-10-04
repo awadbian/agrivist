@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="tour-flow">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בחירת תאריך - {{ tour_package.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tour-flow.css') }}">
+</head>
+
+<body>
+    {% include 'line.html' %}
+
+    <main class="tour-step-page">
+        <section class="step-header">
+            <h1>{{ tour_package.title }}</h1>
+            <p>משך הסיור: {{ tour_package.duration_label }}</p>
+            <div class="step-indicator" aria-label="התקדמות ההזמנה">
+                <span class="active">1</span>
+                <span>2</span>
+                <span>3</span>
+                <span>4</span>
+            </div>
+        </section>
+
+        <form class="flow-card calendar-card" method="POST" data-calendar-form data-today="{{ today }}">
+            <h2>בחרו תאריך</h2>
+            <p class="card-subtitle">בחרו תאריך מועדף לסיור</p>
+            <input type="hidden" id="selectedDate" name="selected_date" value="{{ selected_date }}">
+
+            <div class="calendar-shell">
+                <div class="calendar-header">
+                    <button class="calendar-nav" type="button" data-calendar-prev aria-label="חודש קודם">‹</button>
+                    <h3 data-calendar-title></h3>
+                    <button class="calendar-nav" type="button" data-calendar-next aria-label="חודש הבא">›</button>
+                </div>
+
+                <div class="weekdays" aria-hidden="true">
+                    <span>ש</span>
+                    <span>ו</span>
+                    <span>ה</span>
+                    <span>ד</span>
+                    <span>ג</span>
+                    <span>ב</span>
+                    <span>א</span>
+                </div>
+
+                <div class="calendar-grid" data-calendar-grid></div>
+            </div>
+
+            {% if errors.selected_date %}
+            <p class="flow-error">{{ errors.selected_date }}</p>
+            {% endif %}
+
+            <p class="selected-date-summary" data-selected-date-summary hidden></p>
+
+            <div class="flow-actions">
+                <a class="flow-secondary-btn" href="{{ url_for('tours') }}">חזרה</a>
+                <button class="flow-primary-btn" type="submit">המשך</button>
+            </div>
+        </form>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/tour-calendar.js') }}"></script>
+</body>
+
+</html>

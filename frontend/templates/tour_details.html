@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="tour-flow">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פרטים אישיים - {{ booking_draft.tour_title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tour-flow.css') }}">
+</head>
+
+<body>
+    {% include 'line.html' %}
+
+    <main class="tour-step-page">
+        <section class="step-header">
+            <h1>{{ booking_draft.tour_title }}</h1>
+            <p>משך הסיור: שעתיים</p>
+            <div class="step-indicator" aria-label="התקדמות ההזמנה">
+                <span class="done">✓</span>
+                <span class="done">✓</span>
+                <span class="active">3</span>
+                <span>4</span>
+            </div>
+        </section>
+
+        <form class="flow-card details-card" method="POST">
+            <h2>פרטים אישיים</h2>
+            <p class="card-subtitle">מלאו את הפרטים שלכם</p>
+
+            {% if error %}
+            <p class="flow-error">{{ error }}</p>
+            {% endif %}
+
+            <label>
+                שם מלא *
+                <input name="full_name" type="text" value="{{ booking_draft.full_name or session.get('user', '') }}" placeholder="השם המלא שלכם" required>
+            </label>
+
+            <label>
+                אימייל *
+                <input name="email" type="email" value="{{ booking_draft.email or session.get('email', '') }}" placeholder="example@email.com" required>
+            </label>
+
+            <label>
+                טלפון *
+                <input name="phone" type="tel" value="{{ booking_draft.phone or '' }}" placeholder="050-1234567" required>
+            </label>
+
+            <label>
+                הערות נוספות
+                <textarea name="notes" rows="4" placeholder="אלרגיות, בקשות מיוחדות וכו׳">{{ booking_draft.notes or '' }}</textarea>
+            </label>
+
+            <div class="flow-actions">
+                <a class="flow-secondary-btn" href="{{ url_for('tour_time', tour_package_id=booking_draft.tour_package_id) }}">חזרה</a>
+                <button class="flow-primary-btn" type="submit">המשך לתשלום</button>
+            </div>
+        </form>
+    </main>
+</body>
+
+</html>

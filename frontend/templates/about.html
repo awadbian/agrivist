@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>אודות החווה</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f6f3ee;
+        }
+
+        .about-hero {
+            height: 430px;
+            background-image:
+                linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+                url("{{ url_for('static', filename='images/about-hero.jpg') }}");
+
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-content h1 {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        .hero-content p {
+            font-size: 24px;
+            max-width: 800px;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+
+            .about-hero {
+                height: 320px;
+                padding: 20px;
+            }
+
+            .hero-content h1 {
+                font-size: 40px;
+            }
+
+            .hero-content p {
+                font-size: 18px;
+            }
+        }
+     .who-we-are-section,
+.our-story-section{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 230px;
+    padding: 110px 8%;
+    background-color: #f6f3ee;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+}
+
+.our-story-section{
+    flex-direction: row-reverse;
+}
+
+.who-text,
+.story-text{
+    flex: 1;
+    max-width: 650px;
+    direction: rtl;
+    text-align: right;
+}
+
+.who-text h2{
+    font-size: 55px;
+    color: #d88b00;
+    margin-bottom: 15px;
+}
+
+.story-text h2{
+    font-size: 60px;
+    color: #355e3b;
+    margin-bottom: 30px;
+}
+
+.who-text h4{
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #222;
+}
+
+.who-text p,
+.story-text p{
+    font-size: 22px;
+    line-height: 2;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.who-image {
+    flex: 1;
+    max-width: 600px;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
+}
+
+.who-image img {
+    width: 320px;
+    height: 450px;
+    border-radius: 25px;
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+}
+
+.story-image img{
+    width: 520px;
+    height: 520px;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.16);
+}
+
+.values-section{
+    background-color: #f6f3ee;
+    padding: 100px 5%;
+    text-align: center;
+}
+
+.values-header h2{
+    font-size: 70px;
+    color: #2f4b2f;
+    margin-bottom: 20px;
+}
+
+.values-header p{
+    font-size: 32px;
+    color: #7a8b72;
+    margin-bottom: 70px;
+}
+
+.values-cards{
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+    flex-wrap: wrap;
+}
+
+.value-card{
+    background-color: white;
+    width: 320px;
+min-height: 330px;
+    border-radius: 30px;
+    padding: 35px 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: 0.3s;
+}
+
+.value-card:hover{
+    transform: translateY(-8px);
+}
+
+.value-icon{
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 35px;
+    border-radius: 25px;
+    background-color: #f1f3ef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+}
+
+.value-card h3{
+    font-size: 42px;
+    color: #233b23;
+    margin-bottom: 35px;
+}
+
+.value-card p{
+    font-size: 26px;
+    line-height: 1.9;
+    color: #6d7b6b;
+}
+
+.stats-section {
+    background-color: #5A8758;
+
+    width: 100vw;
+
+    margin-top: 80px;
+    margin-bottom: 80px;
+
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+
+    padding: 70px 40px;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+
+    box-sizing: border-box;
+}
+
+.stat-box {
+    flex: 1;
+}
+
+.stat-box h2 {
+    font-size: 70px;
+    margin: 0 0 20px;
+    font-weight: 300;
+    color: white;
+}
+
+.stat-box p {
+    font-size: 26px;
+    margin: 0;
+    color: white;
+}
+
+.site-footer {
+    width: 100vw;
+    margin-right: calc(50% - 50vw);
+    margin-left: calc(50% - 50vw);
+    background: #E6E1D8;
+    padding: 45px 8%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    gap: 80px;
+    direction: rtl;
+    text-align: right;
+}
+
+.footer-col {
+    flex: 1;
+}
+
+.footer-col h3 {
+    color: #2f4b2f;
+    font-size: 28px;
+    margin-bottom: 18px;
+}
+
+.footer-col p,
+.footer-col a {
+    display: block;
+    color: #666;
+    font-size: 20px;
+    line-height: 1.9;
+    text-decoration: none;
+}
+
+.footer-col a:hover {
+    color: #4f8154;
+}
+.videos-section {
+    background: #f7f5f1;
+    padding: 60px 8%;
+    direction: rtl;
+    text-align: center;
+}
+
+.videos-header h2 {
+    font-size: 38px;
+    color: #274b33;
+    margin-bottom: 10px;
+}
+
+.videos-header p {
+    font-size: 17px;
+    color: #7f856d;
+    margin-bottom: 40px;
+}
+
+.videos-grid {
+    max-width: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 28px;
+}
+
+.video-card {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #dde8d0;
+    aspect-ratio: 16/9;
+}
+
+.video-card iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+    </style>
+</head>
+
+<body>
+
+    {% include 'line.html' %}
+
+    <section class="about-hero">
+        <div class="hero-content">
+            <h1>אודות החווה</h1>
+
+            <p>
+                סיפור של כאב, צמיחה ואהבה לפלפלים חריפים מכל העולם ,
+                שהפך לחווה חקלאית, מרכז מבקרים וחוויה משפחתית ייחודית.
+            </p>
+        </div>
+    </section>
+
+</body>
+</html>
+<section class="who-we-are-section">
+
+    <div class="who-text">
+        <h2>מי אנחנו?</h2>
+
+        <h4>
+            נעים להכיר,<br>
+            אנחנו הדינרים – בית של חריף!
+        </h4>
+
+        <p>
+    בחלקה קטנה שהקים אבי, התחלנו לגדל פלפלים חריפים
+    מכל העולם מתוך אהבה אמיתית לטעמים מיוחדים ולחקלאות.
+</p>
+
+<p>
+    עם השנים המקום הפך למרכז מבקרים ייחודי,
+    שבו אנשים יכולים להכיר מקרוב את עולם הפלפלים,
+    להשתתף בסיורים ולחוות חוויה חקלאית אותנטית.
+</p>
+
+<p>
+    כיום תמצאו אצלנו מעל 150 סוגי פלפלים,
+    חממות, סיורים, טעימות ומוצרים חריפים לכל המשפחה.
+</p>
+
+    </div>
+    <div class="who-image">
+    <img src="{{ url_for('static', filename='images/about-owner.png') }}" alt="Farm Owner">
+    <img src="{{ url_for('static', filename='images/about-peppers.jpg') }}" alt="Peppers">
+</div>
+
+    </section>
+
+    <section class="our-story-section">
+
+    <div class="story-image">
+        <img src="{{ url_for('static', filename='images/farm-story.jpg') }}" alt="Farm Story">
+    </div>
+
+    <div class="story-text">
+
+        <h2>הסיפור שלנו</h2>
+
+        <p>
+        חוות הפלפלים נוסדה מתוך חזון ייחודי – להביא לישראל את מגוון זני הפלפלים החריפים
+        המיוחדים ביותר מרחבי העולם, וליצור חוויה חקלאית חדשנית ומלמדת לכל מבקר.
+        </p>
+
+        <p>
+        המערכת שלנו נבנתה כדי לחבר בין עולם החקלאות, הטכנולוגיה והתיירות במקום אחד.
+        באמצעות האתר, מבקרים יכולים להזמין סיורים, להכיר סוגי פלפלים שונים,
+        ללמוד על רמות חריפות, ולגלות מידע מרתק על כל זן וזן.
+        </p>
+
+        <p>
+        בנוסף, המערכת מסייעת בניהול החווה בצורה חכמה ויעילה –
+        מעקב אחר צמחים, ניהול הזמנות, מידע על אזורי החווה,
+        ומערכת מתקדמת לניהול תהליכים חקלאיים.
+        </p>
+
+        <p>
+        המטרה שלנו היא ליצור חוויה מיוחדת, חינוכית ומהנה,
+        שתקרב אנשים לעולם הפלפלים ולחקלאות הישראלית.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- VIDEOS SECTION -->
+<section class="videos-section">
+    <div class="videos-header">
+        <h2>צפו בנו בפעולה</h2>
+        <p>סרטונים מהחווה והמשפחה שלנו</p>
+    </div>
+    <div class="videos-grid">
+        <div class="video-card">
+            <iframe 
+                src="https://www.youtube.com/embed/VlpodrrVN9Q"
+                title="סרטון 1"
+                frameborder="0"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <div class="video-card">
+            <iframe 
+                src="https://www.youtube.com/embed/OKN_p_EkNQ0"
+                title="סרטון 2"
+                frameborder="0"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <div class="video-card">
+            <iframe 
+                src="https://www.youtube.com/embed/DMlV5QAul7w"
+                title="סרטון 3"
+                frameborder="0"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+</section>
+<section class="values-section">
+
+    <div class="values-header">
+        <h2>הערכים שלנו</h2>
+        <p>העקרונות שמובילים אותנו בכל יום בחווה</p>
+    </div>
+
+    <div class="values-cards">
+
+        <div class="value-card">
+            <div class="value-icon">🌶️</div>
+
+            <h3>אהבה לפלפלים</h3>
+
+            <p>
+                אנו מגדלים מגוון רחב של פלפלים חריפים מתוך אהבה אמיתית לטעמים מיוחדים וחוויה ייחודית.
+            </p>
+        </div>
+
+        <div class="value-card">
+            <div class="value-icon">🚜</div>
+
+            <h3>חקלאות חכמה</h3>
+
+            <p>
+                שילוב בין חקלאות מסורתית לטכנולוגיה מתקדמת לניהול החווה והמבקרים.
+            </p>
+        </div>
+
+        <div class="value-card">
+            <div class="value-icon">👨‍👩‍👧</div>
+
+            <h3>חוויה משפחתית</h3>
+
+            <p>
+                יצירת מקום מיוחד שבו ילדים ומבקרים יכולים ליהנות, ללמוד ולבלות יחד.
+            </p>
+        </div>
+
+        <div class="value-card">
+            <div class="value-icon">🌱</div>
+
+            <h3>שמירה על הטבע</h3>
+
+            <p>
+                עבודה מתוך כבוד לסביבה, לצמחים ולתהליכי גידול טבעיים ובריאים לאורך זמן.
+            </p>
+        </div>
+
+    </div>
+<section class="stats-section">
+
+    <div class="stat-box">
+        <h2>+100</h2>
+        <p>זני פלפלים</p>
+    </div>
+
+    <div class="stat-box">
+        <h2>+5,000</h2>
+        <p>מבקרים בשנה</p>
+    </div>
+
+    <div class="stat-box">
+        <h2>8</h2>
+        <p>שנות פעילות</p>
+    </div>
+
+    <div class="stat-box">
+        <h2>{{ approved_workers }}</h2>
+<p>עובדים מסורים</p>
+    </div>
+
+</section>
+
+<footer class="site-footer">
+
+<div class="footer-col">
+
+<h3>חוות הפלפלים</h3>
+
+<p>
+מרכז מבקרים חקלאי ייחודי
+לפלפלים חריפים מכל העולם
+</p>
+
+</div>
+
+<div class="footer-col">
+
+<h3>קישורים מהירים</h3>
+
+<a href="/">בית</a>
+
+<a href="/about">אודות החווה</a>
+
+<a href="/pepper-varieties">זני פלפלים</a>
+
+<a href="/tours-booking">הזמנת סיורים</a>
+
+</div>
+
+<div class="footer-col">
+
+<h3>צור קשר</h3>
+
+<p>טלפון: 052-324-4448</p>
+
+<p>spicydinars@gmail.com</p>
+
+<p>עוטף עזה</p>
+
+</div>
+
+</footer>
+
+</section>

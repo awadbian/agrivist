@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" class="admin-tour">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ form_title|default('הוספת סיור חדש', true) }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tour-admin.css') }}">
+</head>
+
+<body>
+    {% include 'line.html' %}
+
+    <section class="tour-admin-hero">
+        <div class="tour-admin-hero__content">
+            <h1>{{ form_title|default('הוספת סיור חדש', true) }}</h1>
+            <p>{{ form_subtitle|default('ניהול סיורים במערכת חוות הפלפלים', true) }}</p>
+        </div>
+    </section>
+
+    <main class="tour-admin-page">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-list">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if errors.database %}
+            <div class="flash-list">
+                <div class="flash error">{{ errors.database }}</div>
+            </div>
+        {% endif %}
+
+<form class="tour-form-card" method="POST" action="{{ form_action|default(url_for('add_tour'), true) }}" enctype="multipart/form-data">            <section class="tour-form-section">
+                <h2>פרטי הסיור</h2>
+                <div class="tour-form-grid">
+                    <div class="form-field">
+                        <label for="title">שם הסיור</label>
+                        <input id="title" name="title" value="{{ form_data.title }}" placeholder="לדוגמה: סיור משפחתי" required>
+                        {% if errors.title %}<div class="field-error">{{ errors.title }}</div>{% endif %}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="price">מחיר לאדם</label>
+                        <input id="price" name="price" type="number" min="1" step="1" value="{{ form_data.price }}" placeholder="120" required>
+                        {% if errors.price %}<div class="field-error">{{ errors.price }}</div>{% endif %}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="duration_minutes">משך בדקות</label>
+                        <input id="duration_minutes" name="duration_minutes" type="number" min="1" step="1" value="{{ form_data.duration_minutes }}" placeholder="90" required>
+                        {% if errors.duration_minutes %}<div class="field-error">{{ errors.duration_minutes }}</div>{% endif %}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="max_people">מספר משתתפים מקסימלי</label>
+                        <input id="max_people" name="max_people" type="number" min="1" step="1" value="{{ form_data.max_people }}" placeholder="20" required>
+                        {% if errors.max_people %}<div class="field-error">{{ errors.max_people }}</div>{% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <section class="tour-form-section">
+                <h2>תיאור ותוכן</h2>
+                <div class="tour-form-grid">
+                    <div class="form-field form-field--full">
+                        <label for="description">תיאור הסיור</label>
+                        <textarea id="description" name="description" placeholder="תיאור קצר שיופיע בכרטיס הסיור" required>{{ form_data.description }}</textarea>
+                        {% if errors.description %}<div class="field-error">{{ errors.description }}</div>{% endif %}
+                    </div>
+
+                    <div class="form-field form-field--full">
+                        <label for="includes">מה כלול בסיור</label>
+                        <textarea id="includes" name="includes" placeholder="כתבו כל פריט בשורה נפרדת" required>{{ form_data.includes }}</textarea>
+                        <small class="field-help">לדוגמה: הדרכה מקצועית, סיור בחממות, טעימות פלפלים.</small>
+                        {% if errors.includes %}<div class="field-error">{{ errors.includes }}</div>{% endif %}
+                    </div>
+
+                    <div class="form-field form-field--full">
+    <label for="image_file">תמונה</label>
+
+    <input type="hidden" name="existing_image_url" value="{{ form_data.image_url }}">
+
+    <input 
+        id="image_file" 
+        name="image_file" 
+        type="file" 
+        accept="image/*"
+        {% if not form_data.image_url %}required{% endif %}
+    >
+
+    {% if form_data.image_url %}
+        <small class="field-help">כבר קיימת תמונה לסיור. אפשר לבחור תמונה חדשה להחלפה.</small>
+    {% else %}
+        <small class="field-help">בחרו תמונה .</small>
+    {% endif %}
+
+    {% if errors.image_url %}
+        <div class="field-error">{{ errors.image_url }}</div>
+    {% endif %}
+</div>
+                </div>
+            </section>
+
+            <section class="tour-form-section">
+                <h2>זמינות</h2>
+                <div class="tour-form-grid">
+                    <div class="form-field">
+                        <label for="available_from">זמין מתאריך</label>
+<input id="available_from" name="available_from" type="date" value="{{ form_data.available_from }}" min="{{ today_date }}" required>                           {% if errors.available_from %}<div class="field-error">{{ errors.available_from }}</div>{% endif %}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="available_until">זמין עד תאריך</label>
+                        <input id="available_until" name="available_until" type="date" value="{{ form_data.available_until }}" min="{{ today_date }}" required>
+                        {% if errors.available_until %}<div class="field-error">{{ errors.available_until }}</div>{% endif %}
+                    </div>
+
+                    <label class="checkbox-field form-field--full">
+                        <input type="checkbox" name="is_active" {% if form_data.is_active %}checked{% endif %}>
+                        סיור פעיל ומוצג למבקרים
+                    </label>
+                </div>
+            </section>
+
+            <div class="form-actions">
+                <button class="btn-primary" type="submit">{{ submit_label|default('שמירת סיור', true) }}</button>
+                <a class="btn-secondary" href="{{ url_for('admin_dashboard') }}">ביטול</a>
+            </div>
+        </form>
+    </main>
+</body>
+
+</html>

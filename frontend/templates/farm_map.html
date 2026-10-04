@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>מפת החווה</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            direction: rtl;
+            background-color: #f7f8f5;
+            color: #173b2b;
+        }
+
+        .map-page {
+            padding: 25px 70px;
+        }
+
+        .map-header {
+            text-align: right;
+            margin-bottom: 25px;
+        }
+
+        .map-header h1 {
+            margin: 0;
+            font-size: 34px;
+            color: #173b2b;
+        }
+
+        .map-header p {
+            margin-top: 8px;
+            color: #8b9388;
+            font-size: 15px;
+        }
+
+        .map-container {
+            background: white;
+            border: 1px solid #dce8d8;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .map-container img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            background: #4f7f4d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: #3f6f41;
+        }
+    </style>
+</head>
+<body>
+
+    {% include "line.html" %}
+
+    <div class="map-page">
+        <div class="map-header">
+            <a class="back-btn" href="{{ url_for('admin_dashboard') }}">← חזרה לדשבורד</a>
+            <h1>🗺️ מפת החווה</h1>
+            <p>תצוגת המפה הכללית של החווה</p>
+        </div>
+
+        <div class="map-container">
+            <img src="{{ url_for('static', filename='images/farm-map.jpg.jpeg') }}" alt="מפת החווה">
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פרטי עובד</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/worker-dashboard.css') }}">
+</head>
+<body>
+    {% include "line.html" %}
+
+    <main class="worker-dashboard">
+        <section class="constraints-page">
+            <p class="dashboard-kicker">נתוני עובד</p>
+            <h1>פרטי עובד</h1>
+            <p class="dashboard-welcome">שלום, {{ worker_name }}</p>
+            <p class="constraints-placeholder-text">
+                כאן צריך לממש דף שיש בו את כל הנתונים של העובד, ואפשרות להוסיף או לעדכן פרטי עובד.
+            </p>
+            <a class="schedule-info-btn" href="/worker-dashboard">חזרה לדשבורד עובד</a>
+        </section>
+    </main>
+</body>
+</html>

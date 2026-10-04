@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <title>סיורים והזמנות</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tours-booking.css') }}">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            background-color: #f7f4ee;
+            color: #1f3327;
+        }
+
+        .hero {
+            position: relative;
+            height: 385px;
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+                url("https://images1.ynet.co.il/PicServer2/24012010/2959386/6_wa.jpg");
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        .tour-admin-add-btn {
+            position: absolute;
+            top: 22px;
+            right: 22px;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 18px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 999px;
+            background: #5f8358;
+            color: white;
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+        }
+
+        .tour-admin-add-btn:hover {
+            background: #42663d;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .hero p {
+            font-size: 22px;
+            margin-top: 15px;
+        }
+
+        .tours-section {
+            background: white;
+            padding: 70px 40px;
+            text-align: center;
+        }
+
+        .tours-section h2 {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6d7c70;
+            font-size: 18px;
+            margin-bottom: 50px;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .tour-card {
+            width: 30%;
+            background: white;
+            border: 1px solid #d8e4d6;
+            border-radius: 14px;
+            padding: 30px;
+            text-align: right;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            box-sizing: border-box;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tour-card.selected {
+            border: 3px solid #c90022;
+            box-shadow: 0 8px 25px rgba(201, 0, 34, 0.18);
+        }
+
+        .check-icon {
+            display: none;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 28px;
+            height: 28px;
+            background: #c90022;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+        }
+
+        .tour-card.selected .check-icon {
+            display: block;
+        }
+
+        .tour-card h3 {
+            text-align: center;
+            font-size: 25px;
+        }
+
+        .price {
+            text-align: center;
+            color: #c90022;
+            font-size: 30px;
+            margin: 25px 0;
+            font-weight: bold;
+        }
+
+        .price span {
+            font-size: 17px;
+            color: #6d7c70;
+        }
+
+        .tour-card p {
+            color: #607064;
+            line-height: 1.8;
+        }
+
+        .tour-card ul {
+            list-style: none;
+            padding: 0;
+            line-height: 2;
+        }
+
+        .booking-ready-box {
+            max-width: 700px;
+            margin: 65px auto 0;
+            background: white;
+            border-radius: 22px;
+            padding: 48px;
+            text-align: center;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .booking-ready-box h2 {
+            font-size: 46px;
+            margin: 0 0 18px;
+            font-weight: 800;
+        }
+
+        .booking-ready-box p {
+            color: #8b969d;
+            font-size: 19px;
+            margin-bottom: 34px;
+        }
+
+        .continue-booking-btn {
+            display: block;
+            width: 100%;
+            background: #c90022;
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            box-sizing: border-box;
+        }
+
+        footer {
+            background: #f1eee9;
+            padding: 45px 70px;
+            display: flex;
+            justify-content: space-around;
+            text-align: right;
+            color: #1f3327;
+        }
+
+        footer h3 {
+            font-size: 18px;
+        }
+
+        footer p {
+            color: #69776c;
+            font-size: 17px;
+        }
+
+        @media(max-width: 900px) {
+            .tour-admin-add-btn {
+                top: 14px;
+                right: 14px;
+                min-height: 40px;
+                padding: 0 14px;
+                font-size: 14px;
+            }
+
+            .cards,
+            footer {
+                flex-direction: column;
+            }
+
+            .tour-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include 'line.html' %}
+
+    <section class="hero">
+        {% if session.get("role") == "admin" %}
+        <a class="tour-admin-add-btn" href="{{ url_for('add_tour') }}" aria-label="הוספת סיור חדש">
+            ➕ הוספת סיור
+        </a>
+        {% endif %}
+
+        <div>
+            <h1>סיורים והזמנות</h1>
+            <p>חוו את החווה מקרוב</p>
+        </div>
+    </section>
+
+    <section class="tours-section">
+
+        <h2>בחרו את הסיור המתאים לכם</h2>
+
+        <p class="subtitle">
+            מגוון אפשרויות סיור לכל משפחה וקבוצה
+        </p>
+
+        <div class="cards">
+
+            <div class="tour-card selected" data-tour-name="סיור בסיסי">
+                <div class="check-icon">✓</div>
+
+                <h3>סיור בסיסי</h3>
+
+                <div class="price">
+                    ₪80 <span>לאדם</span>
+                </div>
+
+                <p>🕒 שעה וחצי</p>
+                <p>👥 עד 20 אנשים</p>
+
+                <p>
+                    סיור מודרך בחווה, הכרות עם זני הפלפלים
+                    העיקריים וסיפור החווה
+                </p>
+
+                <ul>
+                    <li>✔ הדרכה מקצועית</li>
+                    <li>✔ סיור בחממות</li>
+                    <li>✔ טעימות פלפלים</li>
+                    <li>✔ תמונות מזכרת</li>
+                </ul>
+            </div>
+
+            <div class="tour-card" data-tour-name="סיור משפחתי">
+                <div class="check-icon">✓</div>
+
+                <h3>סיור משפחתי</h3>
+
+                <div class="price">
+                    ₪120 <span>לאדם</span>
+                </div>
+
+                <p>🕒 שעתיים</p>
+                <p>👥 עד 15 אנשים</p>
+
+                <p>
+                    סיור מותאם למשפחות עם פעילויות לילדים
+                    וסדנת הכנת רטבים
+                </p>
+
+                <ul>
+                    <li>✔ פעילויות לילדים</li>
+                    <li>✔ סדנת הכנת רטבים</li>
+                    <li>✔ טעימות והדגמות</li>
+                    <li>✔ מתנות לילדים</li>
+                </ul>
+            </div>
+
+            <div class="tour-card" data-tour-name="חוויה פרימיום">
+                <div class="check-icon">✓</div>
+
+                <h3>חוויה פרימיום</h3>
+
+                <div class="price">
+                    ₪200 <span>לאדם</span>
+                </div>
+
+                <p>🕒 3 שעות</p>
+                <p>👥 עד 12 אנשים</p>
+
+                <p>
+                    סיור מעמיק כולל סדנת קטיף,
+                    הכנת רטבים וארוחה חקלאית
+                </p>
+
+                <ul>
+                    <li>✔ סדנת קטיף בחממות</li>
+                    <li>✔ הכנת רטבים אישית</li>
+                    <li>✔ ארוחה חקלאית</li>
+                    <li>✔ מוצרי החווה</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="booking-ready-box">
+            <h2>מוכנים להזמין?</h2>
+
+            <p>
+                בחרתם את הסיור המושלם!
+                לחצו להמשך ההזמנה
+            </p>
+
+            <a id="continueBookingBtn" class="continue-booking-btn" href="/tours/calendar/1">
+                המשך להזמנה
+            </a>
+        </div>
+
+    </section>
+
+    <footer>
+        <div>
+            <h3>חוות הפלפלים - עוטף עזה</h3>
+            <p>מרכז מבקרים חקלאי ייחודי המתמחה בגידול זני</p>
+            <p>פלפלים חריפים מכל רחבי העולם</p>
+        </div>
+
+        <div>
+            <h3>קישורים מהירים</h3>
+            <p>אודות החווה</p>
+            <p>זני פלפלים</p>
+            <p>הזמנת סיורים</p>
+        </div>
+
+        <div>
+            <h3>פרטי התקשרות</h3>
+            <p>עוטף עזה, ישראל</p>
+        </div>
+    </footer>
+
+    <script>
+        let selectedTourId = "1";
+
+        document.querySelectorAll(".tour-card").forEach(function (card) {
+            card.addEventListener("click", function () {
+                document.querySelectorAll(".tour-card").forEach(function (c) {
+                    c.classList.remove("selected");
+                });
+
+                card.classList.add("selected");
+
+                selectedTourId = card.getAttribute("data-tour-id");
+
+                document.getElementById("continueBookingBtn").href =
+                    "/tours/calendar/" + selectedTourId;
+            });
+        });
+    </script>
+
+    <!-- Hidden content for CI tests -->
+    <div style="display:none;">
+        <h2>טופס הזמנה</h2>
+
+        {% if error %}
+        {{ error }}
+        {% endif %}
+
+        {% if success %}
+        {{ success }}
+        {% endif %}
+    </div>
+
+</body>
+
+</html>

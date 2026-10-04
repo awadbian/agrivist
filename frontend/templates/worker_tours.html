@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ניהול סיורים</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/worker-dashboard.css') }}">
+</head>
+<body>
+
+{% include "line.html" %}
+
+<main class="worker-dashboard">
+    <section class="constraints-page">
+
+        <p class="dashboard-kicker">סיורים משובצים לעובד</p>
+        <h1>ניהול סיורים</h1>
+
+        <table border="1" style="width:100%; background:white; margin-top:20px;">
+            <thead>
+                <tr>
+                    <th>תאריך</th>
+                    <th>שעה</th>
+                    <th>שם המזמין</th>
+                    <th>סוג סיור</th>
+                    <th>מספר משתתפים</th>
+                    <th>אימייל</th>
+                    <th>סטטוס</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% if bookings %}
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.preferred_date }}</td>
+                        <td>{{ booking.preferred_time }}</td>
+                        <td>{{ booking.full_name }}</td>
+                        <td>{{ booking.tour_type }}</td>
+                        <td>{{ booking.participants }}</td>
+                        <td>{{ booking.email }}</td>
+                        <td>{{ booking.status }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7">אין סיורים משובצים לעובד זה</td><td colspan="7">אין סיורים משובצים לעובד זה</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <br>
+
+        <a href="/worker-dashboard" class="schedule-info-btn">
+            חזרה לדשבורד עובד
+        </a>
+
+    </section>
+</main>
+
+</body>
+</html>
